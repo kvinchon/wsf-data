@@ -1,6 +1,6 @@
 
-# Created by https://www.gitignore.io/api/node,vuejs
-# Edit at https://www.gitignore.io/?templates=node,vuejs
+# Created by https://www.gitignore.io/api/node
+# Edit at https://www.gitignore.io/?templates=node
 
 ### Node ###
 # Logs
@@ -108,10 +108,4 @@ dist/
 tmp/
 temp/
 
-### Vuejs ###
-# Recommended template: Node.gitignore
-
-npm-debug.log
-yarn-error.log
-
-# End of https://www.gitignore.io/api/node,vuejs
+# End of https://www.gitignore.io/api/node

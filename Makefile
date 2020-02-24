@@ -6,4 +6,4 @@ server:
 	cd api/ && npm run start
 
 client:
-	cd front/ && npm run dev
+	cd front/ && npm run serve
