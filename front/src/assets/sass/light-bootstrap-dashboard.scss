@@ -1,0 +1,31 @@
+@import "dashboard/variables";
+@import "dashboard/mixins";
+
+@import "dashboard/typography";
+
+// Core CSS
+@import "dashboard/misc";
+@import "dashboard/sidebar-and-main-panel";
+@import "dashboard/buttons";
+@import "dashboard/inputs";
+
+@import "dashboard/alerts";
+@import "dashboard/tables";
+
+@import "dashboard/checkbox-radio-switch";
+@import "dashboard/navbars";
+@import "dashboard/footers";
+
+// Fancy Stuff
+@import "dashboard/plugins/animate";
+@import "dashboard/dropdown";
+@import "dashboard/cards";
+@import "dashboard/chartist";
+@import "dashboard/responsive";
+@import "dashboard/bootstrap-switch";
+
+// Nucleo Icons
+@import "dashboard/partial-nucleo-icons";
+
+// Nucleo Icons
+@import "dashboard/partial-nucleo-icons";
