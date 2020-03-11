@@ -11,17 +11,18 @@ const froniusSchema = Joi.object({
     device_id: Joi.string().guid().required(),
     year: Joi.date().format('YYYY').required(),
     month: Joi.date().format(['M', 'MM']).required(),
+    id: Joi.number().required()
 });
 
 module.exports = {
     method: 'GET',
     path: '/api/fronius',
     handler: async (req, toolkit) => {
-        froniusCount = await db.count().from('history_fronius').then(result => {
+        froniusCount = await db.count().from('history_fronius_1').then(result => {
             return result[0];
         });
         
-        return await db.select().from('history_fronius').limit(req.query.limit).offset(req.query.offset)
+        return await db.select().from('history_fronius_1').limit(req.query.limit).offset(req.query.offset)
         .then(result => {
             return toolkit.response({
                 statusCode: 200,
