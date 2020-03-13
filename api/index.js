@@ -10,6 +10,9 @@ const Pack = require('./package');
     const server = await new Hapi.Server({
         host: 'localhost',
         port: 3000,
+        routes: {
+            cors: true
+        }
     });
 
     const swaggerOptions = {
@@ -36,5 +39,6 @@ const Pack = require('./package');
 	}
 
 	server.route(require('./routes/getPanels'));
-	server.route(require('./routes/getFronius'));
+    server.route(require('./routes/getFronius'));
+    server.route(require('./routes/getFroniusByDeviceId'));
 })();
