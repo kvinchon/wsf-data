@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="container-fluid">
-      <div class="row">
+      <!--<div class="row">
         <div class="col-xl-3 col-md-6">
           <stats-card>
             <div slot="header" class="icon-warning">
@@ -61,7 +61,7 @@
             </div>
           </stats-card>
         </div>
-      </div>
+      </div>-->
 
       <!--<div class="row">
         <div id="app">
@@ -72,55 +72,43 @@
 
       <div class="row">
         <div class="col-md-8">
-          <chart-card
-            :id="lineChart.options.chart.id"
-            :width="lineChart.width"
-            :height="lineChart.height"
-            :type="lineChart.type"
-            :options="lineChart.options"
-            :series="lineChart.series"
-          >
-            <template slot="header">
-              <h4 class="card-title">Line Chart</h4>
-              <p class="card-category">24 Hours performance</p>
-            </template>
-            <template slot="footer">
-              <div class="legend">
-                <i class="fa fa-circle text-info"></i> Open
-                <i class="fa fa-circle text-danger"></i> Click
-                <i class="fa fa-circle text-warning"></i> Click Second Time
-              </div>
-              <hr />
-              <div class="stats">
-                <i class="fa fa-history"></i> Updated 3 minutes ago
-              </div>
-            </template>
-          </chart-card>
+          <div v-if="panelsByDeviceId.isLoaded">
+            <!-- If user.name exists, display user.name -->
+            <div v-if="panelsByDeviceId.series[0].data">
+              <chart-card
+                :id="panelsByDeviceId.options.chart.id"
+                :width="panelsByDeviceId.width"
+                :height="panelsByDeviceId.height"
+                :type="panelsByDeviceId.type"
+                :options="panelsByDeviceId.options"
+                :series="panelsByDeviceId.series"
+              >
+                <template slot="header">
+                  <h4 class="card-title">Production et autoconsommation du foyer (Octobre 2019)</h4>
+                  <p class="card-category">1 Month performance</p>
+                </template>
+              </chart-card>
+            </div>
+          </div>
         </div>
 
         <div class="col-md-4">
-          <chart-card
-            :id="pieChart.options.chart.id"
-            :type="pieChart.type"
-            :options="pieChart.options"
-            :series="pieChart.series"
-          >
-            <template slot="header">
-              <h4 class="card-title">Pie Chart</h4>
-              <p class="card-category">24 Hours performance</p>
-            </template>
-            <template slot="footer">
-              <div class="legend">
-                <i class="fa fa-circle text-info"></i> Open
-                <i class="fa fa-circle text-danger"></i> Click
-                <i class="fa fa-circle text-warning"></i> Click Second Time
-              </div>
-              <hr />
-              <div class="stats">
-                <i class="fa fa-history"></i> Updated 3 minutes ago
-              </div>
-            </template>
-          </chart-card>
+          <div v-if="panelsRatioByDeviceId.isLoaded">
+            <!-- If user.name exists, display user.name -->
+            <div v-if="panelsRatioByDeviceId.options.series">
+              <chart-card
+                :height="panelsRatioByDeviceId.options.chart.height"
+                :type="panelsRatioByDeviceId.options.chart.type"
+                :options="panelsRatioByDeviceId.options"
+                :series="panelsRatioByDeviceId.options.series"
+              >
+                <template slot="header">
+                  <h4 class="card-title">Indice de performance</h4>
+                  <p class="card-category">3 Months performance</p>
+                </template>
+              </chart-card>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -207,34 +195,6 @@ export default {
   },
   data() {
     return {
-      lineChart: {
-        height: 200,
-        type: "line",
-        options: {
-          chart: {
-            id: "basic-line"
-          },
-          xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-          }
-        },
-        series: [
-          {
-            name: "series-1",
-            data: [30, 40, 45, 50, 49, 60, 70, 91]
-          }
-        ]
-      },
-      pieChart: {
-        type: "pie",
-        options: {
-          chart: {
-            id: "basic-pie"
-          },
-          labels: ["Apple", "Mango", "Orange", "Watermelon", "Banana"]
-        },
-        series: [44, 55, 41, 17, 15]
-      },
       tableData: {
         data: [
           {
@@ -259,6 +219,53 @@ export default {
           { title: 'Read "Following makes Medium better"', checked: false },
           { title: "Unfollow 5 enemies from twitter", checked: false }
         ]
+      },
+      panelsByDeviceId: {
+        height: 350,
+        type: "area",
+        options: {
+          chart: {
+            id: "panels-prod-by-device-id"
+          },
+          xaxis: {
+            categories: []
+          },
+          stroke: {
+            curve: "smooth"
+          },
+          dataLabels: {
+            enabled: false
+          }
+        },
+        series: [
+          {
+            name: "Production",
+            data: []
+          },
+          {
+            name: "Self-consumption",
+            data: []
+          }
+        ],
+        isLoaded: false
+      },
+      panelsRatioByDeviceId: {
+        options: {
+          series: [],
+          chart: {
+            height: 350,
+            type: "radialBar"
+          },
+          plotOptions: {
+            radialBar: {
+              hollow: {
+                size: "70%"
+              }
+            }
+          },
+          labels: ["Average self-consumption rate"]
+        },
+        isLoaded: false
       },
       productionByDeviceId: {
         type: "area",
@@ -311,11 +318,19 @@ export default {
     };
   },
   mounted() {
-    this.getFroniusByDeviceId(
+    this.getPanelsByDeviceId(
       "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
-      "FromGenToConsumer",
-      this.consumptionByDeviceId
-    );
+      this.panelsByDeviceId
+    ),
+      this.getPanelsRatioByDeviceId(
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.panelsRatioByDeviceId
+      ),
+      this.getFroniusByDeviceId(
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        "FromGenToConsumer",
+        this.consumptionByDeviceId
+      );
     this.getFroniusByDeviceId(
       "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
       "production",
@@ -326,6 +341,42 @@ export default {
     round(value, precision) {
       var multiplier = Math.pow(10, precision || 0);
       return Math.round(value * multiplier) / multiplier;
+    },
+    getPanelsByDeviceId(device_id, chart) {
+      axios
+        .get("http://localhost:3000/api/panels/" + device_id)
+        .then(response => {
+          let result = response.data.data.result;
+          let tsConverted;
+
+          chart.isLoaded = true;
+
+          result.forEach(element => {
+            tsConverted = new Date(
+              Date.parse(element.date)
+            ).toLocaleDateString();
+
+            chart.options.xaxis.categories.push(tsConverted);
+            chart.series[0].data.push(this.round(element.production, 2));
+            chart.series[1].data.push(this.round(element.selfConsumption, 2));
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getPanelsRatioByDeviceId(device_id, chart) {
+      axios
+        .get("http://localhost:3000/api/panels/ratio/" + device_id)
+        .then(response => {
+          let ratio = response.data.data.ratio;
+
+          chart.isLoaded = true;
+          chart.options.series.push(this.round(ratio, 0));
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     getFroniusByDeviceId(device_id, var_name, chart) {
       axios
