@@ -19,11 +19,11 @@ module.exports = {
     method: 'GET',
     path: '/api/panels',
     handler: async (req, toolkit) => {
-        panelsCount = await db.count().from('history_daily').then(result => {
+        panelsCount = await db.count().from('history_daily_1').then(result => {
             return result[0];
         });
         
-        return await db.select().from('history_daily').limit(req.query.limit).offset(req.query.offset)
+        return await db.select().from('history_daily_1').limit(req.query.limit).offset(req.query.offset)
         .then(result => {
             return toolkit.response({
                 statusCode: 200,

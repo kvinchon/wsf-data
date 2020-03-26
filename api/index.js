@@ -38,7 +38,9 @@ const Pack = require('./package');
         console.log(err);
 	}
 
-	server.route(require('./routes/getPanels'));
+    server.route(require('./routes/getPanels'));
+    server.route(require('./routes/getPanelsByDeviceId'));
+    server.route(require('./routes/getPanelsRatioByDeviceId'))
     server.route(require('./routes/getFronius'));
     server.route(require('./routes/getFroniusByDeviceId'));
 })();
