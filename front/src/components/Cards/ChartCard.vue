@@ -34,7 +34,7 @@ export default {
     height: Number,
     type: String,
     options: Object,
-    series: Object
+    series: Array
   }
 };
 </script>
