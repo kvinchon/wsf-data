@@ -7,6 +7,7 @@
       <slot name="header">
         <h4 class="card-title">{{title}}</h4>
         <p class="card-category" v-if="subTitle">{{subTitle}}</p>
+        <base-select></base-select>
       </slot>
     </div>
     <div class="card-body" v-if="$slots.default" :class="bodyClasses">
@@ -19,35 +20,35 @@
   </div>
 </template>
 <script>
-  export default {
-    name: "card",
-    props: {
-      title: {
-        type: String,
-        description: "Card title"
-      },
-      subTitle: {
-        type: String,
-        description: "Card subtitle"
-      },
-      type: {
-        type: String,
-        description: "Card type (e.g primary/danger etc)"
-      },
-      headerClasses: {
-        type: [String, Object, Array],
-        description: "Card header css classes"
-      },
-      bodyClasses: {
-        type: [String, Object, Array],
-        description: "Card body css classes"
-      },
-      footerClasses: {
-        type: [String, Object, Array],
-        description: "Card footer css classes"
-      }
+export default {
+  name: "card",
+  props: {
+    title: {
+      type: String,
+      description: "Card title"
+    },
+    subTitle: {
+      type: String,
+      description: "Card subtitle"
+    },
+    type: {
+      type: String,
+      description: "Card type (e.g primary/danger etc)"
+    },
+    headerClasses: {
+      type: [String, Object, Array],
+      description: "Card header css classes"
+    },
+    bodyClasses: {
+      type: [String, Object, Array],
+      description: "Card body css classes"
+    },
+    footerClasses: {
+      type: [String, Object, Array],
+      description: "Card footer css classes"
     }
-  };
+  }
+};
 </script>
 <style>
 </style>

@@ -71,7 +71,59 @@
       </div>-->
 
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-3 text-center">
+          <base-button :onClick="todayOverview" class="btn btn-primary btn-fill">Aujourd'hui</base-button>
+        </div>
+        <div class="col-md-3 text-center">
+          <base-button :onClick="weekOverview" class="btn btn-primary btn-fill">Cette semaine</base-button>
+        </div>
+        <div class="col-md-3 text-center">
+          <base-button :onClick="monthOverview" class="btn btn-primary btn-fill">Ce mois-ci</base-button>
+        </div>
+        <div class="col-md-3 text-center">
+          <base-button :onClick="totalOverview" class="btn btn-primary btn-fill">Total</base-button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div v-if="consumptionRatioByDeviceId.isLoaded">
+            <!-- If user.name exists, display user.name -->
+            <div v-if="consumptionRatioByDeviceId.series">
+              <chart-card
+                :width="consumptionRatioByDeviceId.chartOptions.chart.width"
+                :type="consumptionRatioByDeviceId.chartOptions.chart.type"
+                :options="consumptionRatioByDeviceId.chartOptions"
+                :series="consumptionRatioByDeviceId.series"
+              >
+                <template slot="header">
+                  <h4 class="card-title">Consommation totale</h4>
+                </template>
+              </chart-card>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div v-if="panelsRatioByDeviceId.isLoaded">
+            <!-- If user.name exists, display user.name -->
+            <div v-if="panelsRatioByDeviceId.options.series">
+              <chart-card
+                :height="panelsRatioByDeviceId.options.chart.height"
+                :type="panelsRatioByDeviceId.options.chart.type"
+                :options="panelsRatioByDeviceId.options"
+                :series="panelsRatioByDeviceId.options.series"
+              >
+                <template slot="header">
+                  <h4 class="card-title">Auto-consommation et Exportation</h4>
+                </template>
+              </chart-card>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
           <div v-if="panelsByDeviceId.isLoaded">
             <!-- If user.name exists, display user.name -->
             <div v-if="panelsByDeviceId.series[0].data">
@@ -84,93 +136,7 @@
                 :series="panelsByDeviceId.series"
               >
                 <template slot="header">
-                  <h4 class="card-title">Production et autoconsommation du foyer (Octobre 2019)</h4>
-                  <p class="card-category">1 Month performance</p>
-                </template>
-              </chart-card>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div v-if="panelsRatioByDeviceId.isLoaded">
-            <!-- If user.name exists, display user.name -->
-            <div v-if="panelsRatioByDeviceId.options.series">
-              <chart-card
-                :height="panelsRatioByDeviceId.options.chart.height"
-                :type="panelsRatioByDeviceId.options.chart.type"
-                :options="panelsRatioByDeviceId.options"
-                :series="panelsRatioByDeviceId.options.series"
-              >
-                <template slot="header">
-                  <h4 class="card-title">Indice de performance</h4>
-                  <p class="card-category">3 Months performance</p>
-                </template>
-              </chart-card>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <div v-if="productionByDeviceId.isLoaded">
-            <!-- If user.name exists, display user.name -->
-            <div v-if="productionByDeviceId.series[0].data">
-              <chart-card
-                :id="productionByDeviceId.options.chart.id"
-                :width="productionByDeviceId.width"
-                :height="productionByDeviceId.height"
-                :type="productionByDeviceId.type"
-                :options="productionByDeviceId.options"
-                :series="productionByDeviceId.series"
-              >
-                <template slot="header">
-                  <h4 class="card-title">Production du foyer par tranche horaire</h4>
-                  <p class="card-category">24 Hours performance</p>
-                </template>
-                <template slot="footer">
-                  <div class="legend">
-                    <i class="fa fa-circle text-info"></i> Open
-                    <i class="fa fa-circle text-danger"></i> Click
-                    <i class="fa fa-circle text-warning"></i> Click Second Time
-                  </div>
-                  <hr />
-                  <div class="stats">
-                    <i class="fa fa-history"></i> Updated 3 minutes ago
-                  </div>
-                </template>
-              </chart-card>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div v-if="consumptionByDeviceId.isLoaded">
-            <!-- If user.name exists, display user.name -->
-            <div v-if="consumptionByDeviceId.series[0].data">
-              <chart-card
-                :id="consumptionByDeviceId.options.chart.id"
-                :width="consumptionByDeviceId.width"
-                :height="consumptionByDeviceId.height"
-                :type="consumptionByDeviceId.type"
-                :options="consumptionByDeviceId.options"
-                :series="consumptionByDeviceId.series"
-              >
-                <template slot="header">
-                  <h4 class="card-title">Consommation du foyer par tranche horaire</h4>
-                  <p class="card-category">24 Hours performance</p>
-                </template>
-                <template slot="footer">
-                  <div class="legend">
-                    <i class="fa fa-circle text-info"></i> Open
-                    <i class="fa fa-circle text-danger"></i> Click
-                    <i class="fa fa-circle text-warning"></i> Click Second Time
-                  </div>
-                  <hr />
-                  <div class="stats">
-                    <i class="fa fa-history"></i> Updated 3 minutes ago
-                  </div>
+                  <h4 class="card-title">Production et auto-consommation du foyer</h4>
                 </template>
               </chart-card>
             </div>
@@ -230,6 +196,11 @@ export default {
           xaxis: {
             categories: []
           },
+          yaxis: {
+            title: {
+              text: "Energie (W)"
+            }
+          },
           stroke: {
             curve: "smooth"
           },
@@ -243,10 +214,21 @@ export default {
             data: []
           },
           {
-            name: "Self-consumption",
+            name: "Consommation",
             data: []
           }
         ],
+        isLoaded: false
+      },
+      consumptionRatioByDeviceId: {
+        series: [],
+        chartOptions: {
+          chart: {
+            type: "donut",
+            width: 500
+          },
+          labels: []
+        },
         isLoaded: false
       },
       panelsRatioByDeviceId: {
@@ -259,11 +241,30 @@ export default {
           plotOptions: {
             radialBar: {
               hollow: {
+                margin: 15,
                 size: "70%"
+              },
+
+              dataLabels: {
+                showOn: "always",
+                name: {
+                  offsetY: -10,
+                  show: true,
+                  color: "#888",
+                  fontSize: "13px"
+                },
+                value: {
+                  color: "#111",
+                  fontSize: "30px",
+                  show: true
+                }
               }
             }
           },
-          labels: ["Average self-consumption rate"]
+          stroke: {
+            lineCap: "round"
+          },
+          labels: ["Autoconsommation"]
         },
         isLoaded: false
       },
@@ -290,61 +291,93 @@ export default {
           }
         ],
         isLoaded: false
-      },
-      consumptionByDeviceId: {
-        type: "area",
-        options: {
-          chart: {
-            id: "conso-by-device-id"
-          },
-          xaxis: {
-            categories: []
-          },
-          stroke: {
-            curve: "smooth"
-          },
-          dataLabels: {
-            enabled: false
-          }
-        },
-        series: [
-          {
-            name: "Consommation du foyer par tranche horaire",
-            data: []
-          }
-        ],
-        isLoaded: false
       }
     };
   },
-  mounted() {
-    this.getPanelsByDeviceId(
-      "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
-      this.panelsByDeviceId
-    ),
-      this.getPanelsRatioByDeviceId(
-        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
-        this.panelsRatioByDeviceId
-      ),
-      this.getFroniusByDeviceId(
-        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
-        "FromGenToConsumer",
-        this.consumptionByDeviceId
-      );
-    this.getFroniusByDeviceId(
-      "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
-      "production",
-      this.productionByDeviceId
-    );
-  },
   methods: {
-    round(value, precision) {
-      var multiplier = Math.pow(10, precision || 0);
-      return Math.round(value * multiplier) / multiplier;
-    },
-    getPanelsByDeviceId(device_id, chart) {
+    getPanelsOverviewConsumptionByDeviceId(time_period, device_id, chart) {
+      chart.isLoaded = false;
+      chart.chartOptions.labels = [];
+      chart.series = [];
+
       axios
-        .get("http://localhost:3000/api/panels/" + device_id)
+        .get(
+          "http://localhost:3000/api/panels/overview/consumption/" +
+            time_period +
+            "/" +
+            device_id
+        )
+        .then(response => {
+          chart.isLoaded = true;
+
+          let result = response.data.data.result;
+          let tsConverted;
+
+          chart.chartOptions.labels.push("Panneaux");
+          chart.chartOptions.labels.push("Réseau");
+
+          result.forEach(element => {
+            chart.series.push(this.round(element.panels, 0));
+            chart.series.push(this.round(element.grid, 0));
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getFroniusOverviewConsumptionByDeviceId() {},
+    getPanelsOverviewRatioByDeviceId(time_period, device_id, chart) {
+      chart.isLoaded = false;
+      chart.options.series = [];
+
+      axios
+        .get(
+          "http://localhost:3000/api/panels/overview/ratio/" +
+            time_period +
+            "/" +
+            device_id
+        )
+        .then(response => {
+          chart.isLoaded = true;
+          let result = response.data.data.result;
+
+          result.forEach(element => {
+            chart.options.series.push(this.round(element.ratio, 0));
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getFroniusOverviewRatioByDeviceId(device_id, chart) {
+      chart.isLoaded = false;
+      chart.options.series = [];
+
+      axios
+        .get("http://localhost:3000/api/panels/overview/ratio/" + device_id)
+        .then(response => {
+          let ratio = response.data.data.ratio;
+
+          chart.isLoaded = true;
+          chart.options.series.push(this.round(ratio, 0));
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getPanelsOverviewProductionByDeviceId(time_period, device_id, chart) {
+      chart.options.xaxis.categories = [];
+      chart.series[0].data = [];
+      chart.series[1].data = [];
+      chart.isLoaded = false;
+
+      axios
+        .get(
+          "http://localhost:3000/api/panels/overview/production/" +
+            time_period +
+            "/" +
+            device_id
+        )
         .then(response => {
           let result = response.data.data.result;
           let tsConverted;
@@ -365,22 +398,15 @@ export default {
           console.log(error);
         });
     },
-    getPanelsRatioByDeviceId(device_id, chart) {
+    getFroniusOverviewProductionByDeviceId(device_id, chart) {
+      chart.options.xaxis.categories = [];
+      chart.series[0].data = [];
+      chart.series[1].data = [];
+      chart.isLoaded = false;
       axios
-        .get("http://localhost:3000/api/panels/ratio/" + device_id)
-        .then(response => {
-          let ratio = response.data.data.ratio;
-
-          chart.isLoaded = true;
-          chart.options.series.push(this.round(ratio, 0));
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getFroniusByDeviceId(device_id, var_name, chart) {
-      axios
-        .get("http://localhost:3000/api/fronius/" + device_id + "/" + var_name)
+        .get(
+          "http://localhost:3000/api/fronius/overview/production/" + device_id
+        )
         .then(response => {
           let result = response.data.data.result;
           let tsConverted;
@@ -393,12 +419,87 @@ export default {
             ).toLocaleTimeString();
 
             chart.options.xaxis.categories.push(tsConverted);
-            chart.series[0].data.push(this.round(element.value, 2));
+            let value = parseFloat(element.sum);
+
+            if (element.source === "production") {
+              chart.series[0].data.push(this.round(value, 2));
+            } else {
+              chart.series[1].data.push(this.round(value, 2));
+            }
           });
         })
         .catch(error => {
           console.log(error);
         });
+    },
+    todayOverview() {
+      this.getFroniusOverviewProductionByDeviceId(
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.panelsByDeviceId
+      );
+      this.getFroniusOverviewRatioByDeviceId(
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.panelsByDeviceId
+      );
+      this.getFroniusOverviewConsumptionByDeviceId(
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.consumptionRatioByDeviceId
+      );
+    },
+    weekOverview() {
+      this.getPanelsOverviewProductionByDeviceId(
+        "week",
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.panelsByDeviceId
+      );
+      this.getPanelsOverviewRatioByDeviceId(
+        "week",
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.panelsRatioByDeviceId
+      );
+      this.getPanelsOverviewConsumptionByDeviceId(
+        "week",
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.consumptionRatioByDeviceId
+      );
+    },
+    monthOverview() {
+      this.getPanelsOverviewProductionByDeviceId(
+        "month",
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.panelsByDeviceId
+      );
+      this.getPanelsOverviewRatioByDeviceId(
+        "month",
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.panelsRatioByDeviceId
+      );
+      this.getPanelsOverviewConsumptionByDeviceId(
+        "month",
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.consumptionRatioByDeviceId
+      );
+    },
+    totalOverview() {
+      this.getPanelsOverviewProductionByDeviceId(
+        "total",
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.panelsByDeviceId
+      );
+      this.getPanelsOverviewRatioByDeviceId(
+        "total",
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.panelsRatioByDeviceId
+      );
+      this.getPanelsOverviewConsumptionByDeviceId(
+        "total",
+        "8bbecc0a-ca23-41ca-95fd-5ce0eb145d9d",
+        this.consumptionRatioByDeviceId
+      );
+    },
+    round(value, precision) {
+      var multiplier = Math.pow(10, precision || 0);
+      return Math.round(value * multiplier) / multiplier;
     }
   }
 };

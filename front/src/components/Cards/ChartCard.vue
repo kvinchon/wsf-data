@@ -1,7 +1,8 @@
 <template>
   <div class="card">
     <div class="card-header" v-if="$slots.header">
-      <slot name="header"></slot>
+      <slot name="header">
+      </slot>
     </div>
     <div class="card-body">
       <div :id="options.chart.id" class="apex-chart">

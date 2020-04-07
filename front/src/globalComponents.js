@@ -1,6 +1,8 @@
+import BaseButton from './components/Inputs/BaseButton'
 import BaseInput from './components/Inputs/BaseInput.vue'
 import BaseCheckbox from './components/Inputs/BaseCheckbox.vue'
 import BaseRadio from './components/Inputs/BaseRadio.vue'
+import BaseSelect from './components/Inputs/BaseSelect'
 import BaseDropdown from './components/BaseDropdown.vue'
 import Card from './components/Cards/Card.vue'
 
@@ -10,9 +12,11 @@ import Card from './components/Cards/Card.vue'
 
 const GlobalComponents = {
   install (Vue) {
+    Vue.component(BaseButton.name, BaseButton)
     Vue.component(BaseInput.name, BaseInput)
     Vue.component(BaseCheckbox.name, BaseCheckbox)
     Vue.component(BaseRadio.name, BaseRadio)
+    Vue.component(BaseSelect.name, BaseSelect)
     Vue.component(BaseDropdown.name, BaseDropdown)
     Vue.component('card', Card)
   }

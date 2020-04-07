@@ -2,23 +2,23 @@
   <div class="wrapper">
     <side-bar>
       <mobile-menu slot="content"></mobile-menu>
-      <sidebar-link to="/admin/overview">
+      <sidebar-link to="/admin/home">
         <i class="nc-icon nc-chart-pie-35"></i>
-        <p>Dashboard</p>
+        <p>Accueil</p>
       </sidebar-link>
       <sidebar-link to="/admin/user">
         <i class="nc-icon nc-circle-09"></i>
-        <p>User Profile</p>
+        <p>Liste</p>
       </sidebar-link>
-      <sidebar-link to="/admin/table-list">
+      <sidebar-link to="/admin/stats">
         <i class="nc-icon nc-notes"></i>
-        <p>Table list</p>
+        <p>Statistiques</p>
       </sidebar-link>
-      <sidebar-link to="/admin/typography">
+      <sidebar-link to="/admin/chat">
         <i class="nc-icon nc-paper-2"></i>
-        <p>Typography</p>
+        <p>Chat</p>
       </sidebar-link>
-      <sidebar-link to="/admin/icons">
+      <!--<sidebar-link to="/admin/icons">
         <i class="nc-icon nc-atom"></i>
         <p>Icons</p>
       </sidebar-link>
@@ -29,7 +29,7 @@
       <sidebar-link to="/admin/notifications">
         <i class="nc-icon nc-bell-55"></i>
         <p>Notifications</p>
-      </sidebar-link>
+      </sidebar-link>-->
     </side-bar>
     <div class="main-panel">
       <top-navbar></top-navbar>

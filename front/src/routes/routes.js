@@ -6,7 +6,8 @@ import NotFound from '../pages/NotFoundPage.vue'
 import Overview from 'src/pages/Overview.vue'
 import UserProfile from 'src/pages/UserProfile.vue'
 import TableList from 'src/pages/TableList.vue'
-import Typography from 'src/pages/Typography.vue'
+import Statistics from 'src/pages/Statistics.vue'
+import Chat from 'src/pages/Chat.vue'
 import Icons from 'src/pages/Icons.vue'
 import Maps from 'src/pages/Maps.vue'
 import Notifications from 'src/pages/Notifications.vue'
@@ -15,32 +16,37 @@ const routes = [
   {
     path: '/',
     component: DashboardLayout,
-    redirect: '/admin/overview'
+    redirect: '/admin/home'
   },
   {
     path: '/admin',
     component: DashboardLayout,
-    redirect: '/admin/overview',
+    redirect: '/admin/home',
     children: [
       {
-        path: 'overview',
-        name: 'Overview',
+        path: 'home',
+        name: 'Accueil',
         component: Overview
       },
       {
         path: 'user',
-        name: 'User',
-        component: UserProfile
-      },
-      {
-        path: 'table-list',
-        name: 'Table List',
+        name: 'Liste',
         component: TableList
       },
       {
-        path: 'typography',
-        name: 'Typography',
-        component: Typography
+        path: 'user/:id',
+        name: 'UserProfile',
+        component: UserProfile
+      },
+      {
+        path: 'stats',
+        name: 'Statistiques',
+        component: Statistics
+      },
+      {
+        path: 'chat',
+        name: 'Chat',
+        component: Chat
       },
       {
         path: 'icons',
