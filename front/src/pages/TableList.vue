@@ -5,8 +5,7 @@
         <div class="col-12">
           <card class="table-striped-with-hover" body-classes="table-full-width table-responsive">
             <template slot="header">
-              <h4 class="card-title">Striped Table with Hover</h4>
-              <p class="card-category">Here is a subtitle for this table</p>
+              <h4 class="card-title">Liste des utilisateurs</h4>
             </template>
             <l-table
               class="table-hover table-striped"

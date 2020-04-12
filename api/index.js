@@ -37,20 +37,12 @@ const Pack = require('./package');
     } catch(err) {
         console.log(err);
 	}
-
-    server.route(require('./routes/getPanels'));
-    server.route(require('./routes/getPanelsByDeviceId'));
-    server.route(require('./routes/getPanelsProduction'));
-    server.route(require('./routes/getPanelsProductionByUserId'));
-    server.route(require('./routes/getPanelsOverviewConsumptionByDeviceId'));
-    server.route(require('./routes/getPanelsProductionRatio'));
-    server.route(require('./routes/getPanelsProductionRatioByUserId'));
-    server.route(require('./routes/getPanelsConsumptionRatio'));
-    server.route(require('./routes/getPanelsConsumptionRatioByUserId'));
-    server.route(require('./routes/getPanelsConsumption'));
-    server.route(require('./routes/getPanelsConsumptionByUserId'));
-    server.route(require('./routes/getFronius'));
-    server.route(require('./routes/getFroniusByDeviceId'));
-    server.route(require('./routes/getFroniusOverviewProductionByDeviceId'));
+    
     server.route(require('./routes/getUsers'));
+    server.route(require('./routes/getPanelsProduction'));
+    server.route(require('./routes/getPanelsConsumption'));
+    server.route(require('./routes/getPanelsProductionRatio'));
+    server.route(require('./routes/getPanelsConsumptionRatio'));
+    server.route(require('./routes/getFroniusProduction'));
+    server.route(require('./routes/getFroniusConsumption'));
 })();

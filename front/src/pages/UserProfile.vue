@@ -302,64 +302,26 @@ export default {
     reloadProductionByUserId(value) {
       switch (value) {
         case "today":
-          console.log(value);
+          this.getFroniusProductionByUserId(this.$route.params.id, this.productionByUserId);
           break;
-        case "week":
-          this.getPanelsProductionByUserId("week", this.$route.params.id, this.productionByUserId);
-          break;
-        case "month":
-          this.getPanelsProductionByUserId("month", this.$route.params.id, this.productionByUserId);
-          break;
-        case "total":
-          this.getPanelsProductionByUserId("total", this.$route.params.id, this.productionByUserId);
+        default:
+          this.getPanelsProductionByUserId(value, this.$route.params.id, this.productionByUserId);
           break;
       }
     },
     reloadProductionRatioByUserId(value) {
-      switch (value) {
-        case "today":
-          console.log(value);
-          break;
-        case "week":
-          this.getPanelsProductionRatioByUserId("week", this.$route.params.id, this.productionRatioByUserId);
-          break;
-        case "month":
-          this.getPanelsProductionRatioByUserId("month", this.$route.params.id, this.productionRatioByUserId);
-          break;
-        case "total":
-          this.getPanelsProductionRatioByUserId("total", this.$route.params.id, this.productionRatioByUserId);
-          break;
-      }
+      this.getPanelsProductionRatioByUserId(value, this.$route.params.id, this.productionRatioByUserId);
     },
     reloadConsumptionRatioByUserId(value) {
-      switch (value) {
-        case "today":
-          console.log(value);
-          break;
-        case "week":
-          this.getPanelsConsumptionRatioByUserId("week", this.$route.params.id, this.consumptionRatioByUserId);
-          break;
-        case "month":
-          this.getPanelsConsumptionRatioByUserId("month", this.$route.params.id, this.consumptionRatioByUserId);
-          break;
-        case "total":
-          this.getPanelsConsumptionRatioByUserId("total", this.$route.params.id, this.consumptionRatioByUserId);
-          break;
-      }
+      this.getPanelsConsumptionRatioByUserId(value, this.$route.params.id, this.consumptionRatioByUserId);
     },
     reloadConsumptionByUserId(value) {
       switch (value) {
         case "today":
-          console.log(value);
+          this.getFroniusConsumptionByUserId(this.$route.params.id, this.consumptionByUserId);
           break;
-        case "week":
-          this.getPanelsConsumptionByUserId("week", this.$route.params.id, this.consumptionByUserId);
-          break;
-        case "month":
-          this.getPanelsConsumptionByUserId("month", this.$route.params.id, this.consumptionByUserId);
-          break;
-        case "total":
-          this.getPanelsConsumptionByUserId("total", this.$route.params.id, this.consumptionByUserId);
+        default:
+          this.getPanelsConsumptionByUserId(value, this.$route.params.id, this.consumptionByUserId);
           break;
       }
     },
@@ -414,6 +376,36 @@ export default {
             tsConverted = new Date(
               Date.parse(element.date)
             ).toLocaleDateString();
+
+            chart.options.xaxis.categories.push(tsConverted);
+            chart.options.series[0].data.push(
+              this.round(element.production, 2)
+            );
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getFroniusProductionByUserId(user_id, chart) {
+      chart.options.xaxis.categories = [];
+      chart.options.series[0].data = [];
+      chart.isLoaded = false;
+
+      axios
+        .get(
+          "http://localhost:3000/api/fronius/production/" + user_id
+        )
+        .then(response => {
+          let result = response.data.data.result;
+          let tsConverted;
+
+          chart.isLoaded = true;
+
+          result.forEach(element => {
+            tsConverted = new Date(
+              Date.parse(element.timestamp)
+            ).toLocaleTimeString();
 
             chart.options.xaxis.categories.push(tsConverted);
             chart.options.series[0].data.push(
@@ -493,6 +485,37 @@ export default {
             tsConverted = new Date(
               Date.parse(element.date)
             ).toLocaleDateString();
+
+            chart.options.xaxis.categories.push(tsConverted);
+            chart.options.series[0].data.push(
+              this.round(element.consumption, 2)
+            );
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getFroniusConsumptionByUserId(user_id, chart) {
+      chart.options.xaxis.categories = [];
+      chart.options.series[0].data = [];
+      chart.isLoaded = false;
+
+      axios
+        .get(
+          "http://localhost:3000/api/fronius/consumption/" +
+            user_id
+        )
+        .then(response => {
+          let result = response.data.data.result;
+          let tsConverted;
+
+          chart.isLoaded = true;
+
+          result.forEach(element => {
+            tsConverted = new Date(
+              Date.parse(element.timestamp)
+            ).toLocaleTimeString();
 
             chart.options.xaxis.categories.push(tsConverted);
             chart.options.series[0].data.push(

@@ -15,7 +15,7 @@
 export default {
   name: "base-select",
   props: {
-    id: String
+    id: String,
   },
   data() {
     return {

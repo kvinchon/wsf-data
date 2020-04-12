@@ -240,64 +240,26 @@ export default {
     reloadProduction(value) {
       switch (value) {
         case "today":
-          console.log(value);
+          this.getFroniusProduction(this.production);
           break;
-        case "week":
-          this.getPanelsProduction("week", this.production);
-          break;
-        case "month":
-          this.getPanelsProduction("month", this.production);
-          break;
-        case "total":
-          this.getPanelsProduction("total", this.production);
+        default:
+          this.getPanelsProduction(value, this.production);
           break;
       }
     },
     reloadProductionRatio(value) {
-      switch (value) {
-        case "today":
-          console.log(value);
-          break;
-        case "week":
-          this.getPanelsProductionRatio("week", this.productionRatio);
-          break;
-        case "month":
-          this.getPanelsProductionRatio("month", this.productionRatio);
-          break;
-        case "total":
-          this.getPanelsProductionRatio("total", this.productionRatio);
-          break;
-      }
+      this.getPanelsProductionRatio(value, this.productionRatio);
     },
     reloadConsumptionRatio(value) {
-      switch (value) {
-        case "today":
-          console.log(value);
-          break;
-        case "week":
-          this.getPanelsConsumptionRatio("week", this.consumptionRatio);
-          break;
-        case "month":
-          this.getPanelsConsumptionRatio("month", this.consumptionRatio);
-          break;
-        case "total":
-          this.getPanelsConsumptionRatio("total", this.consumptionRatio);
-          break;
-      }
+      this.getPanelsConsumptionRatio(value, this.consumptionRatio);
     },
     reloadConsumption(value) {
       switch (value) {
         case "today":
-          console.log(value);
+          this.getFroniusConsumption(this.consumption);
           break;
-        case "week":
-          this.getPanelsConsumption("week", this.consumption);
-          break;
-        case "month":
-          this.getPanelsConsumption("month", this.consumption);
-          break;
-        case "total":
-          this.getPanelsConsumption("total", this.consumption);
+        default:
+          this.getPanelsConsumption(value, this.consumption);
           break;
       }
     },
@@ -318,6 +280,36 @@ export default {
             tsConverted = new Date(
               Date.parse(element.date)
             ).toLocaleDateString();
+
+            chart.options.xaxis.categories.push(tsConverted);
+            chart.options.series[0].data.push(
+              this.round(element.production, 2)
+            );
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getFroniusProduction(chart) {
+      chart.options.xaxis.categories = [];
+      chart.options.series[0].data = [];
+      chart.isLoaded = false;
+
+      axios
+        .get(
+          "http://localhost:3000/api/fronius/production" 
+        )
+        .then(response => {
+          let result = response.data.data.result;
+          let tsConverted;
+
+          chart.isLoaded = true;
+
+          result.forEach(element => {
+            tsConverted = new Date(
+              Date.parse(element.timestamp)
+            ).toLocaleTimeString();
 
             chart.options.xaxis.categories.push(tsConverted);
             chart.options.series[0].data.push(
@@ -384,6 +376,36 @@ export default {
             tsConverted = new Date(
               Date.parse(element.date)
             ).toLocaleDateString();
+
+            chart.options.xaxis.categories.push(tsConverted);
+            chart.options.series[0].data.push(
+              this.round(element.consumption, 2)
+            );
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getFroniusConsumption(chart) {
+      chart.options.xaxis.categories = [];
+      chart.options.series[0].data = [];
+      chart.isLoaded = false;
+
+      axios
+        .get(
+          "http://localhost:3000/api/fronius/consumption" 
+        )
+        .then(response => {
+          let result = response.data.data.result;
+          let tsConverted;
+
+          chart.isLoaded = true;
+
+          result.forEach(element => {
+            tsConverted = new Date(
+              Date.parse(element.timestamp)
+            ).toLocaleTimeString();
 
             chart.options.xaxis.categories.push(tsConverted);
             chart.options.series[0].data.push(
