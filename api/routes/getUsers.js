@@ -67,7 +67,7 @@ module.exports = {
         tags: ['api'],
         validate: {
             params: Joi.object().keys({
-                user_id: Joi.number().min(1)
+                user_id: Joi.number().min(1).description('the user ID (optional)')
             }),
             query: Joi.object().keys({
                 limit: Joi.number().integer().min(1).max(100).default(20),

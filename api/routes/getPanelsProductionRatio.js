@@ -68,8 +68,8 @@ module.exports = {
         tags: ['api'],
         validate: {
             params: Joi.object().keys({
-                time_period: Joi.string().required(),
-                user_id: Joi.number().min(1).allow(null)
+                time_period: Joi.string().required().description('the period of time taken into account (today, week, month or total)'),
+                user_id: Joi.number().min(1).allow(null).description('the user ID (optional)')
             })
         },
         response: {

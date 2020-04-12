@@ -50,7 +50,7 @@ module.exports = {
         tags: ['api'],
         validate: {
             params: Joi.object().keys({
-                user_id: Joi.number().min(1).allow(null)
+                user_id: Joi.number().min(1).allow(null).description('the user ID (optional)')
             }),
         },
         response: {

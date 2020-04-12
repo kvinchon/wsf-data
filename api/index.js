@@ -17,7 +17,7 @@ const Pack = require('./package');
 
     const swaggerOptions = {
         info: {
-                title: 'Test API Documentation',
+                title: 'API Documentation',
                 version: Pack.version,
             },
         };
