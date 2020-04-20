@@ -65,15 +65,15 @@
 
       <div class="row">
         <div class="col-md-4">
-          <div v-if="usersTypologyRatio.isLoaded">
+          <div v-if="typologyRatio.isLoaded">
             <!-- If user.name exists, display user.name -->
-            <div v-if="usersTypologyRatio.series">
+            <div v-if="typologyRatio.series">
               <chart-card
-                :id="usersTypologyRatio.options.chart.id"
-                :type="usersTypologyRatio.type"
-                :height="usersTypologyRatio.height"
-                :options="usersTypologyRatio.options"
-                :series="usersTypologyRatio.series"
+                :id="typologyRatio.options.chart.id"
+                :type="typologyRatio.type"
+                :height="typologyRatio.height"
+                :options="typologyRatio.options"
+                :series="typologyRatio.series"
               >
                 <template slot="header">
                   <h4 class="card-title">Répartition des clients par typologie</h4>
@@ -83,15 +83,15 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div v-if="usersStatusRatio.isLoaded">
+          <div v-if="statusRatio.isLoaded">
             <!-- If user.name exists, display user.name -->
-            <div v-if="usersStatusRatio.series">
+            <div v-if="statusRatio.series">
               <chart-card
-                :id="usersStatusRatio.options.chart.id"
-                :type="usersStatusRatio.type"
-                :height="usersStatusRatio.height"
-                :options="usersStatusRatio.options"
-                :series="usersStatusRatio.series"
+                :id="statusRatio.options.chart.id"
+                :type="statusRatio.type"
+                :height="statusRatio.height"
+                :options="statusRatio.options"
+                :series="statusRatio.series"
               >
                 <template slot="header">
                   <h4 class="card-title">Répartition des utilisateurs par statut</h4>
@@ -144,24 +144,24 @@ export default {
           { title: "Unfollow 5 enemies from twitter", checked: false }
         ]
       },
-      usersTypologyRatio: {
+      typologyRatio: {
         type: "donut",
         height: 300,
         options: {
           chart: {
-            id: "users-typology"
+            id: "typology-ratio"
           },
           labels: []
         },
         series: [],
         isLoaded: false
       },
-      usersStatusRatio: {
+      statusRatio: {
         type: "donut",
         height: 300,
         options: {
           chart: {
-            id: "users-status"
+            id: "status-ratio"
           },
           labels: []
         },
@@ -171,41 +171,20 @@ export default {
     };
   },
   methods: {
-    getUsersusersTypologyRatio(chart) {
+    getUsersRatioByFilter(filter, chart) {
       chart.series = [];
       chart.options.labels = [];
       chart.isLoaded = false;
 
       axios
-        .get("http://localhost:3000/api/users/typology")
+        .get("http://localhost:3000/api/users/ratio/" + filter)
         .then(response => {
           let result = response.data.data.result;
 
           chart.isLoaded = true;
 
           result.forEach(element => {
-            chart.options.labels.push(element.typology);
-            chart.series.push(parseInt(element.ratio));
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getUsersusersStatusRatio(chart) {
-      chart.series = [];
-      chart.options.labels = [];
-      chart.isLoaded = false;
-
-      axios
-        .get("http://localhost:3000/api/users/status")
-        .then(response => {
-          let result = response.data.data.result;
-
-          chart.isLoaded = true;
-
-          result.forEach(element => {
-            chart.options.labels.push(element.status);
+            chart.options.labels.push(element.label);
             chart.series.push(parseInt(element.ratio));
           });
         })
@@ -215,8 +194,8 @@ export default {
     }
   },
   mounted() {
-    this.getUsersusersTypologyRatio(this.usersTypologyRatio);
-    this.getUsersusersStatusRatio(this.usersStatusRatio);
+    this.getUsersRatioByFilter("typology", this.typologyRatio);
+    this.getUsersRatioByFilter("status", this.statusRatio);  
   }
 };
 </script>

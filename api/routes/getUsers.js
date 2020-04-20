@@ -18,7 +18,7 @@ module.exports = {
     path: '/api/users/{user_id?}',
     handler: async (req, toolkit) => {
         if (req.params.user_id) {
-            usersCount = await db.count().from('users').where('id', req.params.user_id).then(result => {
+            var usersCount = await db.count().from('users').where('id', req.params.user_id).then(result => {
                 return result[0];
             });
 

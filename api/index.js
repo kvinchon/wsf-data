@@ -39,8 +39,7 @@ const Pack = require('./package');
 	}
     
     server.route(require('./routes/getUsers'));
-    server.route(require('./routes/getUsersTypologyRatio'));
-    server.route(require('./routes/getUsersStatusRatio'));
+    server.route(require('./routes/getUsersRatio'));
     server.route(require('./routes/getPanelsProduction'));
     server.route(require('./routes/getPanelsConsumption'));
     server.route(require('./routes/getPanelsProductionRatio'));

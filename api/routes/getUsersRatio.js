@@ -2,25 +2,37 @@ const Joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 const db = require('../config/database');
 
 const userSchema = Joi.object({
-    status: Joi.string().required(),
+    label: Joi.string().required(),
     ratio: Joi.string().required()
 });
 
 module.exports = {
     method: 'GET',
-    path: '/api/users/status',
+    path: '/api/users/ratio/{filter}',
     handler: async (req, toolkit) => {
-        count = await db.countDistinct('status').from('users').then(result => {
+        var count, query;
+        switch (req.params.filter) {
+            case "typology":
+                count = db.countDistinct('typology').from('users').whereNotNull('typology');
+                query = db.select('typology as label', db.raw('COUNT(*) as ratio')).from('users').whereNotNull('typology').groupBy('typology');
+                break;
+            case "status":
+                count = db.countDistinct('status').from('users');
+                query = db.select('status as label', db.raw('COUNT(*) as ratio')).from('users').groupBy('status');
+                break;
+        }
+
+        var filterCount = await count.then(result => {
             return result[0];
         });
 
-        return await db.select('status', db.raw('COUNT(*) as ratio')).from('users').groupBy('status')
+        return await query
             .then(result => {
                 return toolkit.response({
                     statusCode: 200,
                     message: 'Successful',
                     errors: null,
-                    meta: count,
+                    meta: filterCount,
                     data: {
                         result
                     }
@@ -28,9 +40,14 @@ module.exports = {
             });
     },
     options: {
-        description: 'Get users status ratio',
-        notes: 'Returns status ratio',
+        description: 'Get users ratio by filter',
+        notes: 'Returns users ratio',
         tags: ['api'],
+        validate: {
+            params: Joi.object().keys({
+                filter: Joi.string().required().description('the filter to which the ratio applies (typology or status)')
+            })
+        },
         response: {
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
