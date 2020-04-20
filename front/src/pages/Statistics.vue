@@ -22,6 +22,29 @@
             </div>
           </card>
         </div>
+        <div class="col-md-6">
+          <card>
+            <template slot="header">
+              <h4 class="card-title">Evolution de la consommation (W)</h4>
+              <base-select :id="consumption.options.chart.id" @changed="reloadConsumption"></base-select>
+            </template>
+            <div v-if="consumption.isLoaded">
+              <!-- If user.name exists, display user.name -->
+              <div v-if="consumption.options.series[0].data">
+                <chart-card
+                  :id="consumption.options.chart.id"
+                  :height="consumption.options.chart.height"
+                  :type="consumption.options.chart.type"
+                  :options="consumption.options"
+                  :series="consumption.options.series"
+                ></chart-card>
+              </div>
+            </div>
+          </card>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-3">
           <card>
             <template slot="header">
@@ -46,7 +69,10 @@
           <card>
             <template slot="header">
               <h4 class="card-title">Auto-consommation et consommation réseau</h4>
-              <base-select :id="consumptionRatio.options.chart.id" @changed="reloadConsumptionRatio"></base-select>
+              <base-select
+                :id="consumptionRatio.options.chart.id"
+                @changed="reloadConsumptionRatio"
+              ></base-select>
             </template>
             <div v-if="consumptionRatio.isLoaded">
               <!-- If user.name exists, display user.name -->
@@ -57,29 +83,6 @@
                   :type="consumptionRatio.options.chart.type"
                   :options="consumptionRatio.options"
                   :series="consumptionRatio.options.series"
-                ></chart-card>
-              </div>
-            </div>
-          </card>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <card>
-            <template slot="header">
-              <h4 class="card-title">Evolution de la consommation (W)</h4>
-              <base-select :id="consumption.options.chart.id" @changed="reloadConsumption"></base-select>
-            </template>
-            <div v-if="consumption.isLoaded">
-              <!-- If user.name exists, display user.name -->
-              <div v-if="consumption.options.series[0].data">
-                <chart-card
-                  :id="consumption.options.chart.id"
-                  :height="consumption.options.chart.height"
-                  :type="consumption.options.chart.type"
-                  :options="consumption.options"
-                  :series="consumption.options.series"
                 ></chart-card>
               </div>
             </div>
@@ -297,9 +300,7 @@ export default {
       chart.isLoaded = false;
 
       axios
-        .get(
-          "http://localhost:3000/api/fronius/production" 
-        )
+        .get("http://localhost:3000/api/fronius/production")
         .then(response => {
           let result = response.data.data.result;
           let tsConverted;
@@ -393,9 +394,7 @@ export default {
       chart.isLoaded = false;
 
       axios
-        .get(
-          "http://localhost:3000/api/fronius/consumption" 
-        )
+        .get("http://localhost:3000/api/fronius/consumption")
         .then(response => {
           let result = response.data.data.result;
           let tsConverted;

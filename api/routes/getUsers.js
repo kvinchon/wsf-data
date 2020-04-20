@@ -8,7 +8,9 @@ const userSchema = Joi.object({
     email: Joi.string().required(),
     typology: Joi.string().allow(null),
     status: Joi.string().required(),
-    created_on: Joi.date().timestamp().required()
+    created_on: Joi.date().timestamp().required(),
+    zipcode: Joi.string(),
+    city: Joi.string()
 });
 
 module.exports = {
@@ -85,8 +87,7 @@ module.exports = {
                 data: Joi.object({
                     result: Joi.array().items(userSchema)
                 })
-            }),
-            failAction: 'log'
+            })
         }
     }
 }

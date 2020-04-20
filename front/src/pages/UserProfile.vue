@@ -80,11 +80,40 @@
             </div>
           </card>
         </div>
+        <div class="col-md-6">
+          <card>
+            <template slot="header">
+              <h4 class="card-title">Evolution de la consommation (W)</h4>
+              <base-select
+                :id="consumptionByUserId.options.chart.id"
+                @changed="reloadConsumptionByUserId"
+              ></base-select>
+            </template>
+            <div v-if="consumptionByUserId.isLoaded">
+              <!-- If user.name exists, display user.name -->
+              <div v-if="consumptionByUserId.options.series[0].data">
+                <chart-card
+                  :id="consumptionByUserId.options.chart.id"
+                  :height="consumptionByUserId.options.chart.height"
+                  :type="consumptionByUserId.options.chart.type"
+                  :options="consumptionByUserId.options"
+                  :series="consumptionByUserId.options.series"
+                ></chart-card>
+              </div>
+            </div>
+          </card>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-3">
           <card>
             <template slot="header">
               <h4 class="card-title">Auto-consommation et exportation</h4>
-              <base-select :id="productionRatioByUserId.options.chart.id" @changed="reloadProductionRatioByUserId"></base-select>
+              <base-select
+                :id="productionRatioByUserId.options.chart.id"
+                @changed="reloadProductionRatioByUserId"
+              ></base-select>
             </template>
             <div v-if="productionRatioByUserId.isLoaded">
               <!-- If user.name exists, display user.name -->
@@ -100,12 +129,14 @@
             </div>
           </card>
         </div>
-
         <div class="col-md-3">
           <card>
             <template slot="header">
               <h4 class="card-title">Auto-consommation et consommation réseau</h4>
-              <base-select :id="consumptionRatioByUserId.options.chart.id" @changed="reloadConsumptionRatioByUserId"></base-select>
+              <base-select
+                :id="consumptionRatioByUserId.options.chart.id"
+                @changed="reloadConsumptionRatioByUserId"
+              ></base-select>
             </template>
             <div v-if="consumptionRatioByUserId.isLoaded">
               <!-- If user.name exists, display user.name -->
@@ -116,29 +147,6 @@
                   :type="consumptionRatioByUserId.options.chart.type"
                   :options="consumptionRatioByUserId.options"
                   :series="consumptionRatioByUserId.options.series"
-                ></chart-card>
-              </div>
-            </div>
-          </card>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <card>
-            <template slot="header">
-              <h4 class="card-title">Evolution de la consommation (W)</h4>
-              <base-select :id="consumptionByUserId.options.chart.id" @changed="reloadConsumptionByUserId"></base-select>
-            </template>
-            <div v-if="consumptionByUserId.isLoaded">
-              <!-- If user.name exists, display user.name -->
-              <div v-if="consumptionByUserId.options.series[0].data">
-                <chart-card
-                  :id="consumptionByUserId.options.chart.id"
-                  :height="consumptionByUserId.options.chart.height"
-                  :type="consumptionByUserId.options.chart.type"
-                  :options="consumptionByUserId.options"
-                  :series="consumptionByUserId.options.series"
                 ></chart-card>
               </div>
             </div>
@@ -302,26 +310,48 @@ export default {
     reloadProductionByUserId(value) {
       switch (value) {
         case "today":
-          this.getFroniusProductionByUserId(this.$route.params.id, this.productionByUserId);
+          this.getFroniusProductionByUserId(
+            this.$route.params.id,
+            this.productionByUserId
+          );
           break;
         default:
-          this.getPanelsProductionByUserId(value, this.$route.params.id, this.productionByUserId);
+          this.getPanelsProductionByUserId(
+            value,
+            this.$route.params.id,
+            this.productionByUserId
+          );
           break;
       }
     },
     reloadProductionRatioByUserId(value) {
-      this.getPanelsProductionRatioByUserId(value, this.$route.params.id, this.productionRatioByUserId);
+      this.getPanelsProductionRatioByUserId(
+        value,
+        this.$route.params.id,
+        this.productionRatioByUserId
+      );
     },
     reloadConsumptionRatioByUserId(value) {
-      this.getPanelsConsumptionRatioByUserId(value, this.$route.params.id, this.consumptionRatioByUserId);
+      this.getPanelsConsumptionRatioByUserId(
+        value,
+        this.$route.params.id,
+        this.consumptionRatioByUserId
+      );
     },
     reloadConsumptionByUserId(value) {
       switch (value) {
         case "today":
-          this.getFroniusConsumptionByUserId(this.$route.params.id, this.consumptionByUserId);
+          this.getFroniusConsumptionByUserId(
+            this.$route.params.id,
+            this.consumptionByUserId
+          );
           break;
         default:
-          this.getPanelsConsumptionByUserId(value, this.$route.params.id, this.consumptionByUserId);
+          this.getPanelsConsumptionByUserId(
+            value,
+            this.$route.params.id,
+            this.consumptionByUserId
+          );
           break;
       }
     },
@@ -393,9 +423,7 @@ export default {
       chart.isLoaded = false;
 
       axios
-        .get(
-          "http://localhost:3000/api/fronius/production/" + user_id
-        )
+        .get("http://localhost:3000/api/fronius/production/" + user_id)
         .then(response => {
           let result = response.data.data.result;
           let tsConverted;
@@ -502,10 +530,7 @@ export default {
       chart.isLoaded = false;
 
       axios
-        .get(
-          "http://localhost:3000/api/fronius/consumption/" +
-            user_id
-        )
+        .get("http://localhost:3000/api/fronius/consumption/" + user_id)
         .then(response => {
           let result = response.data.data.result;
           let tsConverted;
