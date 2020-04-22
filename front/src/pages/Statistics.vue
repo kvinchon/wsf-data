@@ -96,6 +96,27 @@
           </card>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-md-3">
+          <card>
+            <template slot="header">
+              <h4 class="card-title">Total des leads : {{this.leads.data.total}}</h4>
+              <p class="card-category" v-if="this.leads.data.month > 1">{{this.leads.data.month}} nouveaux leads ce mois-ci</p>
+              <p class="card-category" v-else>{{this.leads.data.month}} nouveau lead ce mois-ci</p>
+            </template>
+          </card>
+        </div>
+        <div class="col-md-3">
+          <card>
+          <template slot="header">
+            <h4 class="card-title">Total des prospects : {{this.prospects.data.total}}</h4>
+            <p class="card-category" v-if="this.prospects.data.month > 1">{{this.prospects.data.month}} nouveaux prospects ce mois-ci</p>
+              <p class="card-category" v-else>{{this.prospects.data.month}} nouveau prospect ce mois-ci</p>
+          </template>
+          </card>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -235,6 +256,14 @@ export default {
             curve: "smooth"
           }
         },
+        isLoaded: false
+      },
+      leads: {
+        data: {},
+        isLoaded: false
+      },
+      prospects: {
+        data: {},
         isLoaded: false
       }
     };
@@ -416,6 +445,25 @@ export default {
           console.log(error);
         });
     },
+    getUsersByStatus(status, card) {
+      card.isLoaded = false;
+      card.data = {};
+
+      axios
+        .get("http://localhost:3000/api/users/status/" + status)
+        .then(response => {
+          let result = response.data.data.result;
+
+          card.isLoaded = true;
+
+          result.forEach(element => {
+            card.data = element;
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
@@ -429,6 +477,8 @@ export default {
     this.getPanelsProductionRatio("month", this.productionRatio);
     this.getPanelsConsumptionRatio("month", this.consumptionRatio);
     this.getPanelsConsumption("month", this.consumption);
+    this.getUsersByStatus("lead", this.leads);
+    this.getUsersByStatus("prospect", this.prospects);
   }
 };
 </script>
