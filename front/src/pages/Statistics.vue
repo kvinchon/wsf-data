@@ -45,6 +45,20 @@
       </div>
 
       <div class="row">
+        <div class="col-md-6">
+          <card class="table-striped-with-hover" body-classes="table-full-width table-responsive">
+            <template slot="header">
+              <h4 class="card-title">Consommation par appareil</h4>
+            </template>
+            <l-table
+              class="table-hover table-striped"
+              :columns="equipmentRatio.columns"
+              :data="equipmentRatio.data"
+              :clickable="false"
+            >
+            </l-table>
+          </card>
+        </div>
         <div class="col-md-3">
           <card>
             <template slot="header">
@@ -88,13 +102,6 @@
             </div>
           </card>
         </div>
-        <div class="col-md-6">
-          <card>
-            <template slot="header">
-              <h4 class="card-title">Consommation par appareil</h4>
-            </template>
-          </card>
-        </div>
       </div>
 
       <div class="row">
@@ -121,6 +128,7 @@
   </div>
 </template>
 <script>
+import LTable from "src/components/Table.vue";
 import Card from "src/components/Cards/Card.vue";
 import ChartCard from "src/components/Cards/ChartCard.vue";
 import BaseSelect from "src/components/Inputs/BaseSelect.vue";
@@ -129,6 +137,7 @@ const axios = require("axios");
 
 export default {
   components: {
+    LTable,
     Card,
     ChartCard
   },
@@ -256,6 +265,11 @@ export default {
             curve: "smooth"
           }
         },
+        isLoaded: false
+      },
+      equipmentRatio: {
+        columns: [],
+        data: [],
         isLoaded: false
       },
       leads: {
@@ -445,6 +459,33 @@ export default {
           console.log(error);
         });
     },
+    getEquipmentRatio(table) {
+      table.isLoaded = false;
+      table.data = [];
+
+      axios
+        .get("http://localhost:3000/api/equipment/ratio")
+        .then(response => {
+          var result = response.data.data.result;
+          var columns = Object.keys(result[0]);
+
+          table.isLoaded = true;
+
+          columns.forEach(column => {
+            table.columns.push(column);
+          });
+
+          result.forEach(element => {
+            element.equipment_type = this.capitalizeFirstLetter(element.equipment_type);
+            element.consumption = element.consumption.toString() + ' kWh';
+            element.equipment_ratio = element.equipment_ratio.toString().replace(".", ",") + ' %';
+            table.data.push(element);
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     getUsersByStatus(status, card) {
       card.isLoaded = false;
       card.data = {};
@@ -477,6 +518,7 @@ export default {
     this.getPanelsProductionRatio("month", this.productionRatio);
     this.getPanelsConsumptionRatio("month", this.consumptionRatio);
     this.getPanelsConsumption("month", this.consumption);
+    this.getEquipmentRatio(this.equipmentRatio);
     this.getUsersByStatus("lead", this.leads);
     this.getUsersByStatus("prospect", this.prospects);
   }

@@ -7,8 +7,15 @@
         </tr>
       </slot>
     </thead>
-    <tbody>
+    <tbody v-if="clickable">
     <tr v-for="(item, index) in data" :key="index" @click="userProfile(item)">
+      <slot :row="item">
+        <td v-for="column in columns" :key="column" v-if="hasValue(item, column)">{{itemValue(item, column)}}</td>
+      </slot>
+    </tr>
+    </tbody>
+    <tbody v-else>
+    <tr v-for="(item, index) in data" :key="index">
       <slot :row="item">
         <td v-for="column in columns" :key="column" v-if="hasValue(item, column)">{{itemValue(item, column)}}</td>
       </slot>
@@ -22,6 +29,7 @@
     props: {
       columns: Array,
       data: Array,
+      clickable: Boolean
     },
     methods: {
       hasValue (item, column) {

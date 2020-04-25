@@ -47,4 +47,5 @@ const Pack = require('./package');
     server.route(require('./routes/getPanelsConsumptionRatio'));
     server.route(require('./routes/getFroniusProduction'));
     server.route(require('./routes/getFroniusConsumption'));
+    server.route(require('./routes/getEquipmentRatio'));
 })();
