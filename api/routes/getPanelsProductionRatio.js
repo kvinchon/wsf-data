@@ -2,7 +2,8 @@ const Joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 const db = require('../config/database');
 
 const panelSchema = Joi.object({
-    ratio: Joi.number().required()
+    selfconsumption: Joi.number().required(),
+    export: Joi.number().required()
 });
 
 module.exports = {
@@ -13,40 +14,41 @@ module.exports = {
         if (req.params.user_id) {
             switch (req.params.time_period) {
                 case "today":
-                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'ratio'])).from('history_daily_1').where('user_id', req.params.user_id).andWhere('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-02 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
+                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'selfconsumption'])).from('history_daily_1').where('user_id', req.params.user_id).andWhere('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-02 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
                     break;
                 case "week":
-                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'ratio'])).from('history_daily_1').where('user_id', req.params.user_id).andWhere('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-08 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
+                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'selfconsumption'])).from('history_daily_1').where('user_id', req.params.user_id).andWhere('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-08 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
                     break;
                 case "month":
-                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'ratio'])).from('history_daily_1').where('user_id', req.params.user_id).andWhere('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2020-01-01 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
+                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'selfconsumption'])).from('history_daily_1').where('user_id', req.params.user_id).andWhere('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2020-01-01 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
                     break;
                 case "total":
-                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'ratio'])).from('history_daily_1').where('user_id', req.params.user_id).having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
+                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'selfconsumption'])).from('history_daily_1').where('user_id', req.params.user_id).having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
                     break;
             }
         }
         else {
             switch (req.params.time_period) {
                 case "today":
-                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'ratio'])).from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-02 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
+                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'selfconsumption'])).from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-02 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
                     break;
                 case "week":
-                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'ratio'])).from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-08 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
+                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'selfconsumption'])).from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-08 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
                     break;
                 case "month":
-                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'ratio'])).from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2020-01-01 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
+                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'selfconsumption'])).from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2020-01-01 00:00:00').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
                     break;
                 case "total":
-                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'ratio'])).from('history_daily_1').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
+                    subquery = db.select('id', 'date', db.raw('SUM(?? + ??) / SUM(?? + ?? + ??) * 100 AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid', 'selfconsumption'])).from('history_daily_1').having(db.raw('SUM(?? + ?? + ??) > 0', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_gen_to_grid'])).groupBy('id', 'date');
                     break;
             }
         }
 
-        return await db.raw('SELECT AVG(ratio) AS ratio FROM(??) AS subquery', subquery)
+        return await db.raw('SELECT AVG(selfconsumption) AS selfconsumption FROM(??) AS subquery', subquery)
             .then(result => {
                 result = [{
-                    ratio: result.rows[0].ratio
+                    selfconsumption: result.rows[0].selfconsumption,
+                    export: 100 - result.rows[0].selfconsumption
                 }];
 
                 return toolkit.response({

@@ -87,7 +87,8 @@ module.exports = {
                 data: Joi.object({
                     result: Joi.array().items(userSchema)
                 })
-            })
+            }),
+            failAction: 'log'
         }
     }
 }

@@ -15,7 +15,7 @@ module.exports = {
             return result[0];
         });
 
-        var subquery = db.select('equipment.type AS equipment_type', 'equipment.consumption AS consumption', db.raw('COUNT(*) AS nb_users')).from('users_equipment').innerJoin('users', 'users_equipment.users_id', 'users.id').innerJoin('equipment', 'users_equipment.equipment_id', 'equipment.id').groupBy('equipment.type', 'equipment.consumption');
+        var subquery = db.select('equipment.type AS equipment_type', 'equipment.consumption AS consumption', db.raw('COUNT(*) AS nb_users')).from('users_equipment').innerJoin('users', 'users_equipment.user_id', 'users.id').innerJoin('equipment', 'users_equipment.equipment_id', 'equipment.id').groupBy('equipment.type', 'equipment.consumption');
         var query = db.raw("SELECT equipment_type, consumption, (nb_users / COUNT(*)::float * 100) AS equipment_ratio FROM (??) sq, users u WHERE u.status = 'client' GROUP BY equipment_type, consumption, nb_users ORDER BY equipment_ratio DESC", subquery);
 
         return await query

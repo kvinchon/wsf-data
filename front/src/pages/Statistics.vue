@@ -46,82 +46,93 @@
 
       <div class="row">
         <div class="col-md-6">
-          <card class="table-striped-with-hover" body-classes="table-full-width table-responsive">
-            <template slot="header">
-              <h4 class="card-title">Consommation par appareil</h4>
-            </template>
-            <l-table
-              class="table-hover table-striped"
-              :columns="equipmentRatio.columns"
-              :data="equipmentRatio.data"
-              :clickable="false"
-            >
-            </l-table>
-          </card>
-        </div>
-        <div class="col-md-3">
-          <card>
-            <template slot="header">
-              <h4 class="card-title">Auto-consommation et exportation</h4>
-              <base-select :id="productionRatio.options.chart.id" @changed="reloadProductionRatio"></base-select>
-            </template>
-            <div v-if="productionRatio.isLoaded">
-              <!-- If user.name exists, display user.name -->
-              <div v-if="productionRatio.options.series">
-                <chart-card
-                  :id="productionRatio.options.chart.id"
-                  :height="productionRatio.options.chart.height"
-                  :type="productionRatio.options.chart.type"
-                  :options="productionRatio.options"
-                  :series="productionRatio.options.series"
-                ></chart-card>
-              </div>
+          <div class="row">
+            <div class="col-md-12">
+              <card
+                class="table-striped-with-hover"
+                body-classes="table-full-width table-responsive"
+              >
+                <template slot="header">
+                  <h4 class="card-title">Consommation par appareil</h4>
+                </template>
+                <l-table
+                  class="table-hover table-striped"
+                  :columns="equipmentRatio.columns"
+                  :data="equipmentRatio.data"
+                  :clickable="false"
+                ></l-table>
+              </card>
             </div>
-          </card>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <card>
+                <template slot="header">
+                  <h4 class="card-title">Total des leads : {{this.leads.data.total}}</h4>
+                  <p
+                    class="card-category"
+                    v-if="this.leads.data.month > 1"
+                  >{{this.leads.data.month}} nouveaux leads ce mois-ci</p>
+                  <p class="card-category" v-else>{{this.leads.data.month}} nouveau lead ce mois-ci</p>
+                </template>
+              </card>
+            </div>
+            <div class="col-md-6">
+              <card>
+                <template slot="header">
+                  <h4 class="card-title">Total des prospects : {{this.prospects.data.total}}</h4>
+                  <p
+                    class="card-category"
+                    v-if="this.prospects.data.month > 1"
+                  >{{this.prospects.data.month}} nouveaux prospects ce mois-ci</p>
+                  <p
+                    class="card-category"
+                    v-else
+                  >{{this.prospects.data.month}} nouveau prospect ce mois-ci</p>
+                </template>
+              </card>
+            </div>
+          </div>
         </div>
-        <div class="col-md-3">
-          <card>
-            <template slot="header">
-              <h4 class="card-title">Auto-consommation et consommation réseau</h4>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12">
               <base-select
-                :id="consumptionRatio.options.chart.id"
+                :id="consumptionRatio.chartOptions.chart.id"
                 @changed="reloadConsumptionRatio"
               ></base-select>
-            </template>
-            <div v-if="consumptionRatio.isLoaded">
-              <!-- If user.name exists, display user.name -->
-              <div v-if="consumptionRatio.options.series">
-                <chart-card
-                  :id="consumptionRatio.options.chart.id"
-                  :height="consumptionRatio.options.chart.height"
-                  :type="consumptionRatio.options.chart.type"
-                  :options="consumptionRatio.options"
-                  :series="consumptionRatio.options.series"
-                ></chart-card>
+              <div v-if="consumptionRatio.isLoaded">
+                <div id="chart">
+                  <chart-card
+                    :type="consumptionRatio.chartOptions.chart.type"
+                    :height="consumptionRatio.chartOptions.chart.height"
+                    :options="consumptionRatio.chartOptions"
+                    :series="consumptionRatio.series"
+                  ></chart-card>
+                </div>
               </div>
             </div>
-          </card>
-        </div>
-      </div>
+          </div>
 
-      <div class="row">
-        <div class="col-md-3">
-          <card>
-            <template slot="header">
-              <h4 class="card-title">Total des leads : {{this.leads.data.total}}</h4>
-              <p class="card-category" v-if="this.leads.data.month > 1">{{this.leads.data.month}} nouveaux leads ce mois-ci</p>
-              <p class="card-category" v-else>{{this.leads.data.month}} nouveau lead ce mois-ci</p>
-            </template>
-          </card>
-        </div>
-        <div class="col-md-3">
-          <card>
-          <template slot="header">
-            <h4 class="card-title">Total des prospects : {{this.prospects.data.total}}</h4>
-            <p class="card-category" v-if="this.prospects.data.month > 1">{{this.prospects.data.month}} nouveaux prospects ce mois-ci</p>
-              <p class="card-category" v-else>{{this.prospects.data.month}} nouveau prospect ce mois-ci</p>
-          </template>
-          </card>
+          <div class="row">
+            <div class="col-md-12">
+              <base-select
+                :id="productionRatio.chartOptions.chart.id"
+                @changed="reloadProductionRatio"
+              ></base-select>
+              <div v-if="productionRatio.isLoaded">
+                <div id="chart">
+                  <chart-card
+                    :type="productionRatio.chartOptions.chart.type"
+                    :height="productionRatio.chartOptions.chart.height"
+                    :options="productionRatio.chartOptions"
+                    :series="productionRatio.series"
+                  ></chart-card>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -172,70 +183,122 @@ export default {
         isLoaded: false
       },
       productionRatio: {
-        options: {
+        series: [],
+        chartOptions: {
           chart: {
             id: "prod-ratio",
-            height: 350,
-            type: "radialBar"
+            type: "bar",
+            height: 130,
+            stacked: true,
+            stackType: "100%"
           },
-          series: [],
-          colors: ["#008ffa"],
           plotOptions: {
-            radialBar: {
-              startAngle: -90,
-              endAngle: 90,
-              track: {
-                background: "#333",
-                startAngle: -90,
-                endAngle: 90
-              },
-              dataLabels: {
-                name: {
-                  color: "#000",
-                  show: true
-                },
-                value: {
-                  fontSize: "30px",
-                  show: true
-                }
+            bar: {
+              horizontal: true
+            }
+          },
+          stroke: {
+            width: 1,
+            colors: ["#fff"]
+          },
+          title: {
+            text: "Auto-consommation et exportation"
+          },
+          xaxis: {
+            categories: [],
+            labels: {
+              show: false
+            },
+            axisBorder: {
+              show: false
+            },
+            axisTicks: {
+              show: false
+            },
+            crosshairs: {
+              show: false
+            }
+          },
+          yaxis: {
+            show: false
+          },
+          tooltip: {
+            y: {
+              formatter: function(val) {
+                return val + "K";
               }
             }
           },
-          labels: ["Auto-consommation"]
+          fill: {
+            opacity: 1
+          },
+          legend: {
+            position: "bottom",
+            horizontalAlign: "center"
+          },
+          grid: {
+            show: false
+          }
         },
         isLoaded: false
       },
       consumptionRatio: {
-        options: {
+        series: [],
+        chartOptions: {
           chart: {
             id: "cons-ratio",
-            height: 350,
-            type: "radialBar"
+            type: "bar",
+            height: 130,
+            stacked: true,
+            stackType: "100%"
           },
-          series: [],
-          colors: ["#008ffa"],
           plotOptions: {
-            radialBar: {
-              startAngle: -90,
-              endAngle: 90,
-              track: {
-                background: "#333",
-                startAngle: -90,
-                endAngle: 90
-              },
-              dataLabels: {
-                name: {
-                  color: "#000",
-                  show: true
-                },
-                value: {
-                  fontSize: "30px",
-                  show: true
-                }
+            bar: {
+              horizontal: true
+            }
+          },
+          stroke: {
+            width: 1,
+            colors: ["#fff"]
+          },
+          title: {
+            text: "Auto-consommation et consommation réseau"
+          },
+          xaxis: {
+            categories: [],
+            labels: {
+              show: false
+            },
+            axisBorder: {
+              show: false
+            },
+            axisTicks: {
+              show: false
+            },
+            crosshairs: {
+              show: false
+            }
+          },
+          yaxis: {
+            show: false
+          },
+          tooltip: {
+            y: {
+              formatter: function(val) {
+                return val + "K";
               }
             }
           },
-          labels: ["Auto-consommation"]
+          fill: {
+            opacity: 1
+          },
+          legend: {
+            position: "bottom",
+            horizontalAlign: "center"
+          },
+          grid: {
+            show: false
+          }
         },
         isLoaded: false
       },
@@ -367,16 +430,22 @@ export default {
     },
     getPanelsProductionRatio(time_period, chart) {
       chart.isLoaded = false;
-      chart.options.series = [];
+      chart.series = [];
 
       axios
         .get("http://localhost:3000/api/panels/production/ratio/" + time_period)
         .then(response => {
           chart.isLoaded = true;
-          let result = response.data.data.result;
+          var result = response.data.data.result;
 
           result.forEach(element => {
-            chart.options.series.push(this.round(element.ratio, 0));
+            element.selfconsumption = this.round(element.selfconsumption, 0);
+            element.export = this.round(element.export, 0);
+
+            chart.series.push(
+              { name: "Auto-consommation", data: [element.selfconsumption] },
+              { name: "Exportation", data: [element.export] }
+            );
           });
         })
         .catch(error => {
@@ -385,7 +454,7 @@ export default {
     },
     getPanelsConsumptionRatio(time_period, chart) {
       chart.isLoaded = false;
-      chart.options.series = [];
+      chart.series = [];
 
       axios
         .get(
@@ -393,10 +462,16 @@ export default {
         )
         .then(response => {
           chart.isLoaded = true;
-          let result = response.data.data.result;
+          var result = response.data.data.result;
 
           result.forEach(element => {
-            chart.options.series.push(this.round(element.ratio, 0));
+            element.selfconsumption = this.round(element.selfconsumption, 0);
+            element.grid = this.round(element.grid, 0);
+
+            chart.series.push(
+              { name: "Auto-consommation", data: [element.selfconsumption] },
+              { name: "Consommation réseau", data: [element.grid] }
+            );
           });
         })
         .catch(error => {
@@ -476,9 +551,12 @@ export default {
           });
 
           result.forEach(element => {
-            element.equipment_type = this.capitalizeFirstLetter(element.equipment_type);
-            element.consumption = element.consumption.toString() + ' kWh';
-            element.equipment_ratio = element.equipment_ratio.toString().replace(".", ",") + ' %';
+            element.equipment_type = this.capitalizeFirstLetter(
+              element.equipment_type
+            );
+            element.consumption = element.consumption.toString() + " kWh";
+            element.equipment_ratio =
+              element.equipment_ratio.toString().replace(".", ",") + " %";
             table.data.push(element);
           });
         })
