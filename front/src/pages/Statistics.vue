@@ -72,9 +72,9 @@
                   <h4 class="card-title">Total des leads : {{this.leads.data.total}}</h4>
                   <p
                     class="card-category"
-                    v-if="this.leads.data.month > 1"
-                  >{{this.leads.data.month}} nouveaux leads ce mois-ci</p>
-                  <p class="card-category" v-else>{{this.leads.data.month}} nouveau lead ce mois-ci</p>
+                    v-if="this.leads.data.new > 1"
+                  >{{this.leads.data.new}} nouveaux leads ce mois-ci</p>
+                  <p class="card-category" v-else>{{this.leads.data.new}} nouveau lead ce mois-ci</p>
                 </template>
               </card>
             </div>
@@ -84,12 +84,12 @@
                   <h4 class="card-title">Total des prospects : {{this.prospects.data.total}}</h4>
                   <p
                     class="card-category"
-                    v-if="this.prospects.data.month > 1"
-                  >{{this.prospects.data.month}} nouveaux prospects ce mois-ci</p>
+                    v-if="this.prospects.data.new > 1"
+                  >{{this.prospects.data.new}} nouveaux prospects ce mois-ci</p>
                   <p
                     class="card-category"
                     v-else
-                  >{{this.prospects.data.month}} nouveau prospect ce mois-ci</p>
+                  >{{this.prospects.data.new}} nouveau prospect ce mois-ci</p>
                 </template>
               </card>
             </div>
