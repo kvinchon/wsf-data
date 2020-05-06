@@ -8,9 +8,15 @@ const userSchema = Joi.object({
     email: Joi.string().required(),
     typology: Joi.string().allow(null),
     status: Joi.string().required(),
-    created_on: Joi.date().timestamp().required(),
+    created_on: Joi.date().required(),
     zipcode: Joi.string(),
-    city: Joi.string()
+    city: Joi.string(),
+    surface: Joi.number(),
+    nb_people: Joi.number(),
+    nb_panels: Joi.number(),
+    household_type: Joi.string(),
+    total_interventions: Joi.number(),
+    daily_consumption: Joi.number()
 });
 
 module.exports = {
@@ -18,50 +24,36 @@ module.exports = {
     path: '/api/users/{user_id?}',
     handler: async (req, toolkit) => {
         if (req.params.user_id) {
-            var usersCount = await db.count().from('users').where('id', req.params.user_id).then(result => {
-                return result[0];
-            });
-
-            if (usersCount.count > 0) {
-                return await db.select().from('users').where('id', req.params.user_id).orderBy('id').limit(req.query.limit).offset(req.query.offset)
-                .then(result => {
-                    return toolkit.response({
-                        statusCode: 200,
-                        message: 'Successful',
-                        errors: null,
-                        meta: usersCount,
-                        data: {
-                            result
-                        }
-                    }).code(200);
-                });
-            }
-            else {
-                return toolkit.response({
-                    statusCode: 404,
-                    message: 'Not Found',
-                    errors: 'User id does not exist'
-                }).code(404);
-            }
+            var count = db.count().from('users').where('id', req.params.user_id);
+            var subquery = db.select('id', 'date', db.raw('SUM(?? + ?? + ??) as consumption', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_grid_to_consumer'])).from('history_daily_1').where('user_id', req.params.user_id).groupBy('id', 'date').orderBy('date');
+            var query = db.raw("SELECT u.*, COUNT(DISTINCT ui.date)::int as total_interventions, ROUND(AVG(sq.consumption)::numeric / 1000, 1)::float as daily_consumption FROM (??) as sq, users u INNER JOIN users_intervention ui ON u.id = ui.user_id WHERE u.id = ?? AND ui.date < '2019-12-01' GROUP BY u.id", [subquery, req.params.user_id]);
         }
         else {
-            usersCount = await db.count().from('users').then(result => {
-                return result[0];
-            });
-
-            return await db.select('first_name', 'last_name', 'email', 'typology', 'status', 'id', 'created_on').from('users').orderBy('id').limit(req.query.limit).offset(req.query.offset)
-                .then(result => {
-                    return toolkit.response({
-                        statusCode: 200,
-                        message: 'Successful',
-                        errors: null,
-                        meta: usersCount,
-                        data: {
-                            result
-                        }
-                    }).code(200);
-                })
+            var count = db.count().from('users');
+            var query = db.select('first_name', 'last_name', 'email', 'typology', 'status', 'id', 'created_on').from('users').orderBy('created_on', 'desc').limit(req.query.limit).offset(req.query.offset);
         }
+
+        var usersCount = await count.then(result => {
+            return result[0];
+        });
+
+        usersCount.count = parseInt(usersCount.count, 10);
+
+        return await query.then(result => {
+            if (result.rows) {
+                result = result.rows;
+            }
+            
+            return toolkit.response({
+                statusCode: 200,
+                message: 'Successful',
+                errors: null,
+                meta: usersCount,
+                data: {
+                    result
+                }
+            }).code(200);
+        })
     },
     options: {
         description: 'Get users',
@@ -87,8 +79,7 @@ module.exports = {
                 data: Joi.object({
                     result: Joi.array().items(userSchema)
                 })
-            }),
-            failAction: 'log'
+            })
         }
     }
 }

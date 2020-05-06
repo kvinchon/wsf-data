@@ -3,7 +3,7 @@ const db = require('../config/database');
 
 const userSchema = Joi.object({
     name: Joi.string().required(),
-    type: Joi.string().required(),
+    nature: Joi.string().required(),
     date: Joi.date().required(),
     status: Joi.string().required()
 });
@@ -38,16 +38,18 @@ module.exports = {
             dateStart = '2019-' + currentMonth + '-01';
 
             count = db.count().from('users_intervention').where('user_id', req.params.user_id).andWhere('date', '>=', dateStart).andWhere('date', '<', dateEnd);
-            query = db.select('intervention.name', 'intervention.type', 'users_intervention.date', 'users_intervention.status').from('users_intervention').innerJoin('users', 'users_intervention.user_id', 'users.id').innerJoin('intervention', 'users_intervention.intervention_id', 'intervention.id').where('users.id', req.params.user_id).andWhere('users_intervention.date', '>=', dateStart).andWhere('users_intervention.date', '<', dateEnd).orderBy('users_intervention.date', 'desc');
+            query = db.select('intervention.name', 'intervention.nature', 'users_intervention.date', 'users_intervention.status').from('users_intervention').innerJoin('users', 'users_intervention.user_id', 'users.id').innerJoin('intervention', 'users_intervention.intervention_id', 'intervention.id').where('users.id', req.params.user_id).andWhere('users_intervention.date', '>=', dateStart).andWhere('users_intervention.date', '<', dateEnd).orderBy('users_intervention.date', 'desc');
         }
         else {
             count = db.count().from('users_intervention').where('user_id', req.params.user_id);
-            query = db.select('intervention.name', 'intervention.type', 'users_intervention.date', 'users_intervention.status').from('users_intervention').innerJoin('users', 'users_intervention.user_id', 'users.id').innerJoin('intervention', 'users_intervention.intervention_id', 'intervention.id').where('users.id', req.params.user_id).orderBy('users_intervention.date', 'desc');
+            query = db.select('intervention.name', 'intervention.nature', 'users_intervention.date', 'users_intervention.status').from('users_intervention').innerJoin('users', 'users_intervention.user_id', 'users.id').innerJoin('intervention', 'users_intervention.intervention_id', 'intervention.id').where('users.id', req.params.user_id).orderBy('users_intervention.date', 'desc');
         }
 
         var interventionCount = await count.then(result => {
             return result[0];
         });
+
+        interventionCount.count = parseInt(interventionCount.count, 10);
 
         return await query
             .then(result => {
@@ -63,7 +65,7 @@ module.exports = {
             });
     },
     options: {
-        description: 'Get user interventions by month (optional)',
+        description: 'Get user interventions by user id and month (optional)',
         notes: 'Returns user interventions as an array of objects',
         tags: ['api'],
         validate: {
@@ -83,8 +85,7 @@ module.exports = {
                 data: Joi.object({
                     result: Joi.array().items(userSchema)
                 })
-            }),
-            failAction: 'log'
+            })
         }
     }
 }

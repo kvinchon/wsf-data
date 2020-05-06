@@ -8,29 +8,52 @@
               <card>
                 <template slot="header">
                   <h4 class="card-title">Informations client</h4>
+                  <p class="card-category">Client depuis le {{this.userInfo.data.created_on}}</p>
+                  <button class="btnUserInfo" @click="userInfo.isShown = !userInfo.isShown"></button>
                 </template>
-                <div class="row">
-                  <div class="col-md-6">
-                    <p>Nom : {{ this.userInfo.data.last_name }}</p>
-                  </div>
-                  <div class="col-md-6">
-                    <p>Identifiant : {{this.userInfo.data.id}}</p>
+                <div class="userInfo1" v-show="userInfo.isShown">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p>Nom : {{this.userInfo.data.last_name}}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Identifiant : {{this.userInfo.data.id}}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Prénom : {{this.userInfo.data.first_name}}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Typologie : {{this.userInfo.data.typology}}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Code postal : {{this.userInfo.data.zipcode}} ({{this.userInfo.data.city}})</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Email : {{this.userInfo.data.email}}</p>
+                    </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <p>Prénom : {{ this.userInfo.data.first_name }}</p>
-                  </div>
-                  <div class="col-md-6">
-                    <p>Typologie : {{ this.userInfo.data.typology }}</p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <p>Code postal : {{ this.userInfo.data.zipcode }} ({{ this.userInfo.data.city }})</p>
-                  </div>
-                  <div class="col-md-6">
-                    <p>Email : {{this.userInfo.data.email}}</p>
+
+                <div class="userInfo2" v-show="!userInfo.isShown">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p>Surface du foyer : {{this.userInfo.data.surface}} m²</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Nombre de panneaux : {{this.userInfo.data.nb_panels}}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Nombre de personnes : {{this.userInfo.data.nb_people}}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Total d'interventions : {{this.userInfo.data.total_interventions}}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Consommation journalière type : {{this.userInfo.data.daily_consumption}} kWh</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>Type de foyer : {{this.userInfo.data.household_type}}</p>
+                    </div>
                   </div>
                 </div>
               </card>
@@ -105,39 +128,39 @@
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-12">
-                <base-select
-                  :id="consumptionRatioByUserId.chartOptions.chart.id"
-                  @changed="reloadConsumptionRatioByUserId"
-                ></base-select>
-                <div v-if="consumptionRatioByUserId.isLoaded">
-                  <div id="chart">
-                    <chart-card
-                      :type="consumptionRatioByUserId.chartOptions.chart.type"
-                      :height="consumptionRatioByUserId.chartOptions.chart.height"
-                      :options="consumptionRatioByUserId.chartOptions"
-                      :series="consumptionRatioByUserId.series"
-                    ></chart-card>
-                  </div>
+              <base-select
+                :id="consumptionRatioByUserId.chartOptions.chart.id"
+                @changed="reloadConsumptionRatioByUserId"
+              ></base-select>
+              <div v-if="consumptionRatioByUserId.isLoaded">
+                <div id="chart">
+                  <chart-card
+                    :type="consumptionRatioByUserId.chartOptions.chart.type"
+                    :height="consumptionRatioByUserId.chartOptions.chart.height"
+                    :options="consumptionRatioByUserId.chartOptions"
+                    :series="consumptionRatioByUserId.series"
+                  ></chart-card>
                 </div>
+              </div>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-12">
-                <base-select
-                  :id="productionRatioByUserId.chartOptions.chart.id"
-                  @changed="reloadProductionRatioByUserId"
-                ></base-select>
-                <div v-if="productionRatioByUserId.isLoaded">
-                  <div id="chart">
-                    <chart-card
-                      :type="productionRatioByUserId.chartOptions.chart.type"
-                      :height="productionRatioByUserId.chartOptions.chart.height"
-                      :options="productionRatioByUserId.chartOptions"
-                      :series="productionRatioByUserId.series"
-                    ></chart-card>
-                  </div>
+              <base-select
+                :id="productionRatioByUserId.chartOptions.chart.id"
+                @changed="reloadProductionRatioByUserId"
+              ></base-select>
+              <div v-if="productionRatioByUserId.isLoaded">
+                <div id="chart">
+                  <chart-card
+                    :type="productionRatioByUserId.chartOptions.chart.type"
+                    :height="productionRatioByUserId.chartOptions.chart.height"
+                    :options="productionRatioByUserId.chartOptions"
+                    :series="productionRatioByUserId.series"
+                  ></chart-card>
                 </div>
+              </div>
             </div>
           </div>
         </div>
@@ -161,7 +184,7 @@
                   <p>Contact > Prise en charge > Compte rendu réparation anomalie</p>
 
                   <p v-if="item.status === 'Résolu'">Anomalie détectée : Résolue</p>
-                  <p v-else-if="item.status != 'Terminé'">Anomalie détectée : {{item.type}}</p>
+                  <p v-else-if="item.status != 'Terminé'">Anomalie détectée : {{item.nature}}</p>
                   <button v-if="item.status === 'Urgent' || item.status === 'À venir'">Contacter</button>
                 </card>
               </div>
@@ -196,6 +219,7 @@ export default {
     return {
       userInfo: {
         data: {},
+        isShown: true,
         isLoaded: false
       },
       productionEvolution: {
@@ -386,27 +410,22 @@ export default {
         this.consumptionRatioByUserId
       );
     },
-    getUserById(userId, card) {
+    getUserById(user_id, card) {
       card.isLoaded = false;
       card.data = {};
 
       axios
-        .get("http://localhost:3000/api/users/" + userId)
+        .get("http://localhost:3000/api/users/" + user_id)
         .then(response => {
-          let result = response.data.data.result;
+          var result = response.data.data.result;
 
           card.isLoaded = true;
 
           result.forEach(element => {
-            if (element.typology === null) {
-              element.typology = "inconnue";
-            }
-
             element.typology = this.capitalizeFirstLetter(element.typology);
-
             element.created_on = new Date(
               Date.parse(element.created_on)
-            ).toLocaleString();
+            ).toLocaleDateString();
 
             card.data = element;
           });
@@ -432,8 +451,6 @@ export default {
           card.options.value = time_period;
 
           result.forEach(element => {
-            element.production = this.round(element.production, 0);
-            element.evolution = this.round(element.evolution, 0);
             card.data = element;
           });
         })
@@ -458,8 +475,6 @@ export default {
           card.options.value = time_period;
 
           result.forEach(element => {
-            element.consumption = this.round(element.consumption, 0);
-            element.evolution = this.round(element.evolution, 0);
             card.data = element;
           });
         })
@@ -479,13 +494,10 @@ export default {
             user_id
         )
         .then(response => {
-          chart.isLoaded = true;
           var result = response.data.data.result;
+          chart.isLoaded = true;
 
           result.forEach(element => {
-            element.selfconsumption = this.round(element.selfconsumption, 0);
-            element.export = this.round(element.export, 0);
-
             chart.series.push(
               { name: "Auto-consommation", data: [element.selfconsumption] },
               { name: "Exportation", data: [element.export] }
@@ -512,9 +524,6 @@ export default {
           var result = response.data.data.result;
 
           result.forEach(element => {
-            element.selfconsumption = this.round(element.selfconsumption, 0);
-            element.grid = this.round(element.grid, 0);
-
             chart.series.push(
               { name: "Auto-consommation", data: [element.selfconsumption] },
               { name: "Consommation réseau", data: [element.grid] }
@@ -529,19 +538,19 @@ export default {
       card.isLoaded = false;
       card.data.total = 0;
       card.data.items = [];
-      var url;
 
       if (month) {
-        url =
+        var url =
           "http://localhost:3000/api/interventions/" + user_id + "/" + month;
       } else {
-        url = "http://localhost:3000/api/interventions/" + user_id;
+        var url = "http://localhost:3000/api/interventions/" + user_id;
       }
 
       axios
         .get(url)
         .then(response => {
           var result = response.data.data.result;
+          var options = { year: "numeric", month: "long" };
 
           card.isLoaded = true;
 
@@ -550,13 +559,12 @@ export default {
               card.data.total += 1;
             }
 
-            const options = { year: "numeric", month: "long" };
             element.date = new Date(
               Date.parse(element.date)
             ).toLocaleDateString("fr-FR", options);
 
             element.name = this.capitalizeFirstLetter(element.name);
-            element.type = this.capitalizeFirstLetter(element.type);
+            element.type = this.capitalizeFirstLetter(element.nature);
             element.date = this.capitalizeFirstLetter(element.date);
             element.status = this.capitalizeFirstLetter(element.status);
 
@@ -574,10 +582,6 @@ export default {
     },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-    round(value, precision) {
-      var multiplier = Math.pow(10, precision || 0);
-      return Math.round(value * multiplier) / multiplier;
     }
   },
   mounted() {
@@ -608,3 +612,16 @@ export default {
   }
 };
 </script>
+<style scoped>
+.btnUserInfo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: url(/img/icons/arrow-right.png) no-repeat;
+  border: none;
+  height: 100%;
+}
+.btnUserInfo:focus {
+  outline: 0;
+}
+</style>

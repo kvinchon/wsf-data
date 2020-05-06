@@ -21,14 +21,12 @@
 </template>
 <script>
 import LTable from "src/components/Table.vue";
-import Card from "src/components/Cards/Card.vue";
 
 const axios = require("axios");
 
 export default {
   components: {
-    LTable,
-    Card
+    LTable
   },
   data() {
     return {
@@ -47,8 +45,8 @@ export default {
       axios
         .get("http://localhost:3000/api/users")
         .then(response => {
-          let result = response.data.data.result;
-          let columns = Object.keys(result[0]);
+          var result = response.data.data.result;
+          var columns = Object.keys(result[0]);
 
           table.isLoaded = true;
 
@@ -57,10 +55,8 @@ export default {
           });
 
           result.forEach(element => {
-            if (element.typology === null) {
-              element.typology = "inconnue";
-            }
-
+            element.typology = this.capitalizeFirstLetter(element.typology);
+            element.status = this.capitalizeFirstLetter(element.status);
             element.created_on = new Date(
               Date.parse(element.created_on)
             ).toLocaleString();
@@ -71,6 +67,9 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
     }
   },
   mounted() {

@@ -17,25 +17,25 @@ module.exports = {
                 sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-12-01' AND date < '2019-12-02'", ['from_gen_to_consumer', 'from_grid_to_consumer', 'from_gen_to_batt', 'consumption', req.params.user_id]);
                 sq2 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-11-30' AND date < '2019-12-01'", ['from_gen_to_consumer', 'from_grid_to_consumer', 'from_gen_to_batt', 'consumption_old', req.params.user_id]);
                 sq3 = db.raw('SELECT SUM(consumption) / 1000 as consumption, SUM(consumption_old) / 1000 as consumption_old FROM (??) AS sq1, (??) AS sq2', [sq1, sq2]);
-                query = db.raw('SELECT sq3.consumption, (sq3.consumption - sq3.consumption_old) / sq3.consumption_old * 100 as evolution FROM (??) AS sq3', sq3);
+                query = db.raw('SELECT ROUND(sq3.consumption) as consumption, ROUND((sq3.consumption - sq3.consumption_old) / sq3.consumption_old * 100) as evolution FROM (??) AS sq3', sq3);
                 break;
             case "week":
                 sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-12-01' AND date < '2019-12-08'", ['from_gen_to_consumer', 'from_grid_to_consumer', 'from_gen_to_batt', 'consumption', req.params.user_id]);
                 sq2 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-11-24' AND date < '2019-12-01'", ['from_gen_to_consumer', 'from_grid_to_consumer', 'from_gen_to_batt', 'consumption_old', req.params.user_id]);
                 sq3 = db.raw('SELECT SUM(consumption) / 1000 as consumption, SUM(consumption_old) / 1000 as consumption_old FROM (??) AS sq1, (??) AS sq2', [sq1, sq2]);
-                query = db.raw('SELECT sq3.consumption, (sq3.consumption - sq3.consumption_old) / sq3.consumption_old * 100 as evolution FROM (??) AS sq3', sq3);
+                query = db.raw('SELECT ROUND(sq3.consumption) as consumption, ROUND((sq3.consumption - sq3.consumption_old) / sq3.consumption_old * 100) as evolution FROM (??) AS sq3', sq3);
                 break;
             case "month":
                 sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-12-01' AND date < '2020-01-01'", ['from_gen_to_consumer', 'from_grid_to_consumer', 'from_gen_to_batt', 'consumption', req.params.user_id]);
                 sq2 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-11-01' AND date < '2019-12-01'", ['from_gen_to_consumer', 'from_grid_to_consumer', 'from_gen_to_batt', 'consumption_old', req.params.user_id]);
                 sq3 = db.raw('SELECT SUM(consumption) / 1000 as consumption, SUM(consumption_old) / 1000 as consumption_old FROM (??) AS sq1, (??) AS sq2', [sq1, sq2]);
-                query = db.raw('SELECT sq3.consumption, (sq3.consumption - sq3.consumption_old) / sq3.consumption_old * 100 as evolution FROM (??) AS sq3', sq3);
+                query = db.raw('SELECT ROUND(sq3.consumption) as consumption, ROUND((sq3.consumption - sq3.consumption_old) / sq3.consumption_old * 100) as evolution FROM (??) AS sq3', sq3);
                 break;
             case "total":
                 sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ??", ['from_gen_to_consumer', 'from_grid_to_consumer', 'from_gen_to_batt', 'consumption', req.params.user_id]);
                 sq2 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ??", ['from_gen_to_consumer', 'from_grid_to_consumer', 'from_gen_to_batt', 'consumption_old', req.params.user_id]);
                 sq3 = db.raw('SELECT SUM(consumption) / 1000 as consumption, SUM(consumption_old) / 1000 as consumption_old FROM (??) AS sq1, (??) AS sq2', [sq1, sq2]);
-                query = db.raw('SELECT sq3.consumption, (sq3.consumption - sq3.consumption_old) / sq3.consumption_old * 100 as evolution FROM (??) AS sq3', sq3);
+                query = db.raw('SELECT ROUND(sq3.consumption) as consumption, ROUND((sq3.consumption - sq3.consumption_old) / sq3.consumption_old * 100) as evolution FROM (??) AS sq3', sq3);
                 break;
         }
 

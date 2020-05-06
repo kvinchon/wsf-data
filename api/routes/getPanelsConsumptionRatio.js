@@ -44,7 +44,7 @@ module.exports = {
             }
         }
 
-        return await db.raw('SELECT AVG(selfconsumption) AS selfconsumption FROM(??) AS subquery', subquery)
+        return await db.raw('SELECT ROUND(AVG(selfconsumption)) AS selfconsumption FROM(??) AS subquery', subquery)
             .then(result => {
                 result = [{ 
                     selfconsumption: result.rows[0].selfconsumption,

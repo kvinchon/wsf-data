@@ -3,8 +3,8 @@ const db = require('../config/database');
 
 const userSchema = Joi.object({
     status: Joi.string().required(),
-    total: Joi.string().required(),
-    month: Joi.string().required()
+    total: Joi.number().required(),
+    new: Joi.number().required()
 });
 
 module.exports = {
@@ -15,18 +15,18 @@ module.exports = {
         switch (req.params.status) {
             case "lead":
                 count = db.countDistinct('status').from('users').where('status', '=', 'lead');
-                subquery = db.select('status', db.raw('COUNT(*) as month'), ).from('users').where('status', '=', 'lead').andWhere('created_on', '>=', '2020-04-01').andWhere('created_on', '<', '2020-05-01').groupBy('status');
-                query = db.raw("SELECT u.status, COUNT(*) as total, sq.month FROM(??) AS sq, users AS u WHERE u.status = 'lead' GROUP BY u.status, sq.month", subquery);
+                subquery = db.select('status', db.raw('COUNT(*)::int as new'), ).from('users').where('status', '=', 'lead').andWhere('created_on', '>=', '2020-04-01').andWhere('created_on', '<', '2020-05-01').groupBy('status');
+                query = db.raw("SELECT u.status, COUNT(*)::int as total, sq.new FROM(??) AS sq, users AS u WHERE u.status = 'lead' GROUP BY u.status, sq.new", subquery);
                 break;
             case "prospect":
                 count = db.countDistinct('status').from('users').where('status', '=', 'prospect');
-                subquery = db.select('status', db.raw('COUNT(*) as month'), ).from('users').where('status', '=', 'prospect').andWhere('created_on', '>=', '2020-04-01').andWhere('created_on', '<', '2020-05-01').groupBy('status');
-                query = db.raw("SELECT u.status, COUNT(*) as total, sq.month FROM(??) AS sq, users AS u WHERE u.status = 'prospect' GROUP BY u.status, sq.month", subquery);
+                subquery = db.select('status', db.raw('COUNT(*)::int as new'), ).from('users').where('status', '=', 'prospect').andWhere('created_on', '>=', '2020-04-01').andWhere('created_on', '<', '2020-05-01').groupBy('status');
+                query = db.raw("SELECT u.status, COUNT(*)::int as total, sq.new FROM(??) AS sq, users AS u WHERE u.status = 'prospect' GROUP BY u.status, sq.new", subquery);
                 break;
             case "client":
                 count = db.countDistinct('status').from('users').where('status', '=', 'client');
-                subquery = db.select('status', db.raw('COUNT(*) as month'), ).from('users').where('status', '=', 'client').andWhere('created_on', '>=', '2020-04-01').andWhere('created_on', '<', '2020-05-01').groupBy('status');
-                query = db.raw("SELECT u.status, COUNT(*) as total, sq.month FROM(??) AS sq, users AS u WHERE u.status = 'client' GROUP BY u.status, sq.month", subquery);
+                subquery = db.select('status', db.raw('COUNT(*)::int as new'), ).from('users').where('status', '=', 'client').andWhere('created_on', '>=', '2020-04-01').andWhere('created_on', '<', '2020-05-01').groupBy('status');
+                query = db.raw("SELECT u.status, COUNT(*)::int as total, sq.new FROM(??) AS sq, users AS u WHERE u.status = 'client' GROUP BY u.status, sq.new", subquery);
                 break;
         }
 
@@ -34,12 +34,14 @@ module.exports = {
             return result[0];
         });
 
+        statusCount.count = parseInt(statusCount.count, 10);
+
         return await query
             .then(result => {
                 result = [{
                     status: result.rows[0].status,
                     total: result.rows[0].total,
-                    month: result.rows[0].month,
+                    new: result.rows[0].new,
                 }];
                 return toolkit.response({
                     statusCode: 200,
@@ -58,7 +60,7 @@ module.exports = {
         tags: ['api'],
         validate: {
             params: Joi.object().keys({
-                status: Joi.string().required().description('the user status (lead, prospect or client)')
+                status: Joi.string().required().description('the user status (lead or prospect)')
             })
         },
         response: {

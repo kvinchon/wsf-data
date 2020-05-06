@@ -3,7 +3,7 @@ const db = require('../config/database');
 
 const userSchema = Joi.object({
     label: Joi.string().required(),
-    ratio: Joi.string().required()
+    ratio: Joi.number().required()
 });
 
 module.exports = {
@@ -14,17 +14,19 @@ module.exports = {
         switch (req.params.filter) {
             case "typology":
                 count = db.countDistinct('typology').from('users').whereNotNull('typology');
-                query = db.select('typology as label', db.raw('COUNT(*) as ratio')).from('users').whereNotNull('typology').groupBy('typology');
+                query = db.select('typology as label', db.raw('COUNT(*)::int as ratio')).from('users').where('status', 'client').groupBy('typology');
                 break;
             case "status":
                 count = db.countDistinct('status').from('users');
-                query = db.select('status as label', db.raw('COUNT(*) as ratio')).from('users').groupBy('status');
+                query = db.select('status as label', db.raw('COUNT(*)::int as ratio')).from('users').groupBy('status');
                 break;
         }
 
         var filterCount = await count.then(result => {
             return result[0];
         });
+
+        filterCount.count = parseInt(filterCount.count, 10);
 
         return await query
             .then(result => {

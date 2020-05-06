@@ -5,94 +5,25 @@
         <div class="col-md-6">
           <card>
             <template slot="header">
-              <h4 class="card-title">Evolution de la production (W)</h4>
-              <base-select :id="production.options.chart.id" @changed="reloadProduction"></base-select>
+              <h4 class="card-title">Evolution de la production et consommation (W)</h4>
+              <base-select
+                :id="productionConsumption.options.chart.id"
+                @changed="reloadProductionConsumption"
+              ></base-select>
             </template>
-            <div v-if="production.isLoaded">
+            <div v-if="productionConsumption.isLoaded">
               <!-- If user.name exists, display user.name -->
-              <div v-if="production.options.series[0].data">
+              <div v-if="productionConsumption.series[0].data">
                 <chart-card
-                  :id="production.options.chart.id"
-                  :height="production.options.chart.height"
-                  :type="production.options.chart.type"
-                  :options="production.options"
-                  :series="production.options.series"
+                  :id="productionConsumption.options.chart.id"
+                  :height="productionConsumption.options.chart.height"
+                  :type="productionConsumption.options.chart.type"
+                  :options="productionConsumption.options"
+                  :series="productionConsumption.series"
                 ></chart-card>
               </div>
             </div>
           </card>
-        </div>
-        <div class="col-md-6">
-          <card>
-            <template slot="header">
-              <h4 class="card-title">Evolution de la consommation (W)</h4>
-              <base-select :id="consumption.options.chart.id" @changed="reloadConsumption"></base-select>
-            </template>
-            <div v-if="consumption.isLoaded">
-              <!-- If user.name exists, display user.name -->
-              <div v-if="consumption.options.series[0].data">
-                <chart-card
-                  :id="consumption.options.chart.id"
-                  :height="consumption.options.chart.height"
-                  :type="consumption.options.chart.type"
-                  :options="consumption.options"
-                  :series="consumption.options.series"
-                ></chart-card>
-              </div>
-            </div>
-          </card>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <div class="row">
-            <div class="col-md-12">
-              <card
-                class="table-striped-with-hover"
-                body-classes="table-full-width table-responsive"
-              >
-                <template slot="header">
-                  <h4 class="card-title">Consommation par appareil</h4>
-                </template>
-                <l-table
-                  class="table-hover table-striped"
-                  :columns="equipmentRatio.columns"
-                  :data="equipmentRatio.data"
-                  :clickable="false"
-                ></l-table>
-              </card>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <card>
-                <template slot="header">
-                  <h4 class="card-title">Total des leads : {{this.leads.data.total}}</h4>
-                  <p
-                    class="card-category"
-                    v-if="this.leads.data.month > 1"
-                  >{{this.leads.data.month}} nouveaux leads ce mois-ci</p>
-                  <p class="card-category" v-else>{{this.leads.data.month}} nouveau lead ce mois-ci</p>
-                </template>
-              </card>
-            </div>
-            <div class="col-md-6">
-              <card>
-                <template slot="header">
-                  <h4 class="card-title">Total des prospects : {{this.prospects.data.total}}</h4>
-                  <p
-                    class="card-category"
-                    v-if="this.prospects.data.month > 1"
-                  >{{this.prospects.data.month}} nouveaux prospects ce mois-ci</p>
-                  <p
-                    class="card-category"
-                    v-else
-                  >{{this.prospects.data.month}} nouveau prospect ce mois-ci</p>
-                </template>
-              </card>
-            </div>
-          </div>
         </div>
 
         <div class="col-md-6">
@@ -133,6 +64,80 @@
               </div>
             </div>
           </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <card>
+                <template slot="header">
+                  <h4 class="card-title">Total des leads : {{this.leads.data.total}}</h4>
+                  <p
+                    class="card-category"
+                    v-if="this.leads.data.month > 1"
+                  >{{this.leads.data.month}} nouveaux leads ce mois-ci</p>
+                  <p class="card-category" v-else>{{this.leads.data.month}} nouveau lead ce mois-ci</p>
+                </template>
+              </card>
+            </div>
+            <div class="col-md-6">
+              <card>
+                <template slot="header">
+                  <h4 class="card-title">Total des prospects : {{this.prospects.data.total}}</h4>
+                  <p
+                    class="card-category"
+                    v-if="this.prospects.data.month > 1"
+                  >{{this.prospects.data.month}} nouveaux prospects ce mois-ci</p>
+                  <p
+                    class="card-category"
+                    v-else
+                  >{{this.prospects.data.month}} nouveau prospect ce mois-ci</p>
+                </template>
+              </card>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12">
+              <card
+                class="table-striped-with-hover"
+                body-classes="table-full-width table-responsive"
+              >
+                <template slot="header">
+                  <h4 class="card-title">Consommation par appareil</h4>
+                </template>
+                <l-table
+                  class="table-hover table-striped"
+                  :columns="equipmentRatio.columns"
+                  :data="equipmentRatio.data"
+                  :clickable="false"
+                ></l-table>
+              </card>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12">
+              <card
+                class="table-striped-with-hover"
+                body-classes="table-full-width table-responsive"
+              >
+                <template slot="header">
+                  <h4 class="card-title">Pannes et maintenance</h4>
+                </template>
+                <l-table
+                  class="table-hover table-striped"
+                  :columns="interventionsRatio.columns"
+                  :data="interventionsRatio.data"
+                  :clickable="false"
+                ></l-table>
+              </card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -154,32 +159,33 @@ export default {
   },
   data() {
     return {
-      production: {
+      productionConsumption: {
         options: {
-          series: [
-            {
-              name: "Evolution de la production (W)",
-              data: []
-            }
-          ],
           chart: {
-            id: "production",
+            id: "production-consumption",
             type: "area",
-            height: 270,
-            zoom: {
-              autoScaleYaxis: true
-            }
-          },
-          dataLabels: {
-            enabled: false
+            height: 350
           },
           xaxis: {
             categories: []
           },
           stroke: {
             curve: "smooth"
+          },
+          dataLabels: {
+            enabled: false
           }
         },
+        series: [
+          {
+            name: "Production",
+            data: []
+          },
+          {
+            name: "Consommation",
+            data: []
+          }
+        ],
         isLoaded: false
       },
       productionRatio: {
@@ -302,35 +308,12 @@ export default {
         },
         isLoaded: false
       },
-      consumption: {
-        options: {
-          series: [
-            {
-              name: "Evolution de la consommation (W)",
-              data: []
-            }
-          ],
-          chart: {
-            id: "consumption",
-            type: "area",
-            height: 270,
-            zoom: {
-              autoScaleYaxis: true
-            }
-          },
-          dataLabels: {
-            enabled: false
-          },
-          xaxis: {
-            categories: []
-          },
-          stroke: {
-            curve: "smooth"
-          }
-        },
+      equipmentRatio: {
+        columns: [],
+        data: [],
         isLoaded: false
       },
-      equipmentRatio: {
+      interventionsRatio: {
         columns: [],
         data: [],
         isLoaded: false
@@ -346,13 +329,13 @@ export default {
     };
   },
   methods: {
-    reloadProduction(value) {
+    reloadProductionConsumption(value) {
       switch (value) {
         case "today":
-          this.getFroniusProduction(this.production);
+          this.getFronius(this.productionConsumption);
           break;
         default:
-          this.getPanelsProduction(value, this.production);
+          this.getPanels(value, this.productionConsumption);
           break;
       }
     },
@@ -362,26 +345,17 @@ export default {
     reloadConsumptionRatio(value) {
       this.getPanelsConsumptionRatio(value, this.consumptionRatio);
     },
-    reloadConsumption(value) {
-      switch (value) {
-        case "today":
-          this.getFroniusConsumption(this.consumption);
-          break;
-        default:
-          this.getPanelsConsumption(value, this.consumption);
-          break;
-      }
-    },
-    getPanelsProduction(time_period, chart) {
+    getPanels(time_period, chart) {
       chart.options.xaxis.categories = [];
-      chart.options.series[0].data = [];
+      chart.series[0].data = [];
+      chart.series[1].data = [];
       chart.isLoaded = false;
 
       axios
-        .get("http://localhost:3000/api/panels/production/" + time_period)
+        .get("http://localhost:3000/api/panels/" + time_period)
         .then(response => {
-          let result = response.data.data.result;
-          let tsConverted;
+          var result = response.data.data.result;
+          var tsConverted;
 
           chart.isLoaded = true;
 
@@ -391,25 +365,25 @@ export default {
             ).toLocaleDateString();
 
             chart.options.xaxis.categories.push(tsConverted);
-            chart.options.series[0].data.push(
-              this.round(element.production, 2)
-            );
+            chart.series[0].data.push(element.production);
+            chart.series[1].data.push(element.consumption);
           });
         })
         .catch(error => {
           console.log(error);
         });
     },
-    getFroniusProduction(chart) {
+    getFronius(chart) {
       chart.options.xaxis.categories = [];
-      chart.options.series[0].data = [];
+      chart.series[0].data = [];
+      chart.series[1].data = [];
       chart.isLoaded = false;
 
       axios
-        .get("http://localhost:3000/api/fronius/production")
+        .get("http://localhost:3000/api/fronius")
         .then(response => {
-          let result = response.data.data.result;
-          let tsConverted;
+          var result = response.data.data.result;
+          var tsConverted;
 
           chart.isLoaded = true;
 
@@ -418,10 +392,16 @@ export default {
               Date.parse(element.timestamp)
             ).toLocaleTimeString();
 
-            chart.options.xaxis.categories.push(tsConverted);
-            chart.options.series[0].data.push(
-              this.round(element.production, 2)
-            );
+            if (element.source === "production") {
+              tsConverted = new Date(
+                Date.parse(element.timestamp)
+              ).toLocaleTimeString();
+
+              chart.options.xaxis.categories.push(tsConverted);
+              chart.series[0].data.push(element.value);
+            } else {
+              chart.series[1].data.push(element.value);
+            }
           });
         })
         .catch(error => {
@@ -439,9 +419,6 @@ export default {
           var result = response.data.data.result;
 
           result.forEach(element => {
-            element.selfconsumption = this.round(element.selfconsumption, 0);
-            element.export = this.round(element.export, 0);
-
             chart.series.push(
               { name: "Auto-consommation", data: [element.selfconsumption] },
               { name: "Exportation", data: [element.export] }
@@ -465,68 +442,9 @@ export default {
           var result = response.data.data.result;
 
           result.forEach(element => {
-            element.selfconsumption = this.round(element.selfconsumption, 0);
-            element.grid = this.round(element.grid, 0);
-
             chart.series.push(
               { name: "Auto-consommation", data: [element.selfconsumption] },
               { name: "Consommation réseau", data: [element.grid] }
-            );
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getPanelsConsumption(time_period, chart) {
-      chart.options.xaxis.categories = [];
-      chart.options.series[0].data = [];
-      chart.isLoaded = false;
-
-      axios
-        .get("http://localhost:3000/api/panels/consumption/" + time_period)
-        .then(response => {
-          let result = response.data.data.result;
-          let tsConverted;
-
-          chart.isLoaded = true;
-
-          result.forEach(element => {
-            tsConverted = new Date(
-              Date.parse(element.date)
-            ).toLocaleDateString();
-
-            chart.options.xaxis.categories.push(tsConverted);
-            chart.options.series[0].data.push(
-              this.round(element.consumption, 2)
-            );
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getFroniusConsumption(chart) {
-      chart.options.xaxis.categories = [];
-      chart.options.series[0].data = [];
-      chart.isLoaded = false;
-
-      axios
-        .get("http://localhost:3000/api/fronius/consumption")
-        .then(response => {
-          let result = response.data.data.result;
-          let tsConverted;
-
-          chart.isLoaded = true;
-
-          result.forEach(element => {
-            tsConverted = new Date(
-              Date.parse(element.timestamp)
-            ).toLocaleTimeString();
-
-            chart.options.xaxis.categories.push(tsConverted);
-            chart.options.series[0].data.push(
-              this.round(element.consumption, 2)
             );
           });
         })
@@ -564,6 +482,36 @@ export default {
           console.log(error);
         });
     },
+    getInterventionsRatio(table) {
+      table.isLoaded = false;
+      table.data = [];
+
+      axios
+        .get("http://localhost:3000/api/interventions/ratio")
+        .then(response => {
+          var result = response.data.data.result;
+          var columns = Object.keys(result[0]);
+
+          table.isLoaded = true;
+
+          columns.forEach(column => {
+            table.columns.push(column);
+          });
+
+          result.forEach(element => {
+            element.intervention_type = this.capitalizeFirstLetter(
+              element.intervention_type
+            );
+            element.category = this.capitalizeFirstLetter(element.category);
+            element.intervention_ratio =
+              element.intervention_ratio.toString().replace(".", ",") + " %";
+            table.data.push(element);
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     getUsersByStatus(status, card) {
       card.isLoaded = false;
       card.data = {};
@@ -585,18 +533,14 @@ export default {
     },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-    round(value, precision) {
-      var multiplier = Math.pow(10, precision || 0);
-      return Math.round(value * multiplier) / multiplier;
     }
   },
   mounted() {
-    this.getPanelsProduction("month", this.production);
+    this.getPanels("month", this.productionConsumption);
     this.getPanelsProductionRatio("month", this.productionRatio);
     this.getPanelsConsumptionRatio("month", this.consumptionRatio);
-    this.getPanelsConsumption("month", this.consumption);
     this.getEquipmentRatio(this.equipmentRatio);
+    this.getInterventionsRatio(this.interventionsRatio);
     this.getUsersByStatus("lead", this.leads);
     this.getUsersByStatus("prospect", this.prospects);
   }
