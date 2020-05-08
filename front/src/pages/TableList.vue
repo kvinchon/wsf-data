@@ -55,6 +55,9 @@ export default {
           });
 
           result.forEach(element => {
+            if (element.intervention) {
+              element.intervention = this.capitalizeFirstLetter(element.intervention);
+            }
             element.typology = this.capitalizeFirstLetter(element.typology);
             element.status = this.capitalizeFirstLetter(element.status);
             element.created_on = new Date(

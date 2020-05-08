@@ -2,6 +2,7 @@ const Joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 const db = require('../config/database');
 
 const userSchema = Joi.object({
+    intervention: Joi.string().allow(null),
     id: Joi.number().required(),
     first_name: Joi.string().required(),
     last_name: Joi.string().required(),
@@ -30,7 +31,8 @@ module.exports = {
         }
         else {
             var count = db.count().from('users');
-            var query = db.select('first_name', 'last_name', 'email', 'typology', 'status', 'id', 'created_on').from('users').orderBy('created_on', 'desc').limit(req.query.limit).offset(req.query.offset);
+            var subquery = db.raw("SELECT ui.status as st, u.first_name, u.last_name, u.email, u.typology, u.status, u.id, u.created_on FROM users u LEFT JOIN users_intervention ui ON u.id = ui.user_id WHERE ui.status IN ('urgent', 'à venir') OR ui.status IS NULL GROUP BY st, u.first_name, u.last_name, u.email, u.typology, u.status, u.id, u.created_on");
+            var query = db.raw("SELECT MAX(sq.st) as intervention, sq.first_name, sq.last_name, sq.email, sq.typology, sq.status, sq.id, sq.created_on FROM (??) as sq GROUP BY sq.first_name, sq.last_name, sq.email, sq.typology, sq.status, sq.id, sq.created_on ORDER BY sq.created_on DESC", subquery);
         }
 
         var usersCount = await count.then(result => {

@@ -519,7 +519,7 @@ export default {
       axios
         .get("http://localhost:3000/api/users/status/" + status)
         .then(response => {
-          let result = response.data.data.result;
+          var result = response.data.data.result;
 
           card.isLoaded = true;
 
