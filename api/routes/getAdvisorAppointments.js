@@ -14,17 +14,19 @@ module.exports = {
     handler: async (req, toolkit) => {
         var count, query;
 
+        // Query building
         if (req.params.advisor_id) {
             count = db.count().from('advisor_appointment').where('advisor_id', req.params.advisor_id);
             query = db.select('users.last_name as household', 'advisor_appointment.method', 'advisor_appointment.subject', 'advisor_appointment.date').from('advisor_appointment').innerJoin('users', 'advisor_appointment.user_id', 'users.id').where('advisor_appointment.advisor_id', req.params.advisor_id).andWhere('advisor_appointment.date', '>=', '2019-12-31 00:00:00').orderBy('advisor_appointment.date');
         }
-
+        
         var appointmentsCount = await count.then(result => {
             return result[0];
         });
 
         appointmentsCount.count = parseInt(appointmentsCount.count, 10);
 
+        // Query execution and response building
         return await query
             .then(result => {
                 return toolkit.response({
@@ -43,11 +45,13 @@ module.exports = {
         notes: 'Returns appointments as an array of objects',
         tags: ['api'],
         validate: {
+            // Input validation
             params: Joi.object().keys({
                 advisor_id: Joi.number().required().description('the advisor ID')
             })
         },
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),

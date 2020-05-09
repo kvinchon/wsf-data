@@ -10,7 +10,9 @@ module.exports = {
     method: 'GET',
     path: '/api/panels/consumption/ratio/{time_period}/{user_id?}',
     handler: async (req, toolkit) => {
-        var subquery;
+        var subquery, query;
+
+        // Query building
         if (req.params.user_id) {
             switch (req.params.time_period) {
                 case "today":
@@ -44,7 +46,10 @@ module.exports = {
             }
         }
 
-        return await db.raw('SELECT ROUND(AVG(selfconsumption)) AS selfconsumption FROM(??) AS subquery', subquery)
+        query = db.raw('SELECT ROUND(AVG(selfconsumption)) AS selfconsumption FROM(??) AS subquery', subquery);
+
+        // Query execution and response building
+        return await query
             .then(result => {
                 result = [{ 
                     selfconsumption: result.rows[0].selfconsumption,
@@ -69,12 +74,14 @@ module.exports = {
         notes: 'Returns consumption ratio',
         tags: ['api'],
         validate: {
+            // Input validation
             params: Joi.object().keys({
                 time_period: Joi.string().required().description('the period of time taken into account (today, week, month or total)'),
                 user_id: Joi.number().min(1).allow(null).description('the user ID (optional)')
             })
         },
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),

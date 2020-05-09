@@ -15,6 +15,7 @@ module.exports = {
     handler: async (req, toolkit) => {
         var count, query;
 
+        // Query building
         if (req.params.advisor_id) {
             count = db.count().from('advisor_objective').where('advisor_id', req.params.advisor_id);
             query = db.select('title', 'category', 'remaining', 'deadline', db.raw("CONCAT(completed * 100, '%') as completed")).from('advisor_objective').where('advisor_id', req.params.advisor_id).orderBy('completed', 'desc');
@@ -26,6 +27,7 @@ module.exports = {
 
         objectivesCount.count = parseInt(objectivesCount.count, 10);
 
+        // Query execution and response building
         return await query
             .then(result => {
                 return toolkit.response({
@@ -44,11 +46,13 @@ module.exports = {
         notes: 'Returns objectives as an array of objects',
         tags: ['api'],
         validate: {
+            // Input validation
             params: Joi.object().keys({
                 advisor_id: Joi.number().required().description('the advisor ID')
             })
         },
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),

@@ -1,7 +1,7 @@
 const Joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 const db = require('../config/database');
 
-const userSchema = Joi.object({
+const notificationSchema = Joi.object({
     id: Joi.number().required(),
     first_name: Joi.string().required(),
     last_name: Joi.string().required(),
@@ -17,6 +17,7 @@ module.exports = {
     handler: async (req, toolkit) => {
         var count, query;
 
+        // Query building
         switch (req.params.time_period) {
             case "today":
                 count = db.count().from('notification').where('date', '>=', '2019-12-31').andWhere('date', '<', '2020-01-01');
@@ -42,6 +43,7 @@ module.exports = {
 
         notificationsCount.count = parseInt(notificationsCount.count, 10);
 
+        // Query execution and response building
         return await query
             .then(result => {
                 result = result.rows;
@@ -61,11 +63,13 @@ module.exports = {
         notes: 'Returns notifications as an array of objects',
         tags: ['api'],
         validate: {
+            // Input validation
             params: Joi.object().keys({
                 time_period: Joi.string().required().description('the period of time taken into account (today, week, month or total)')
             })
         },
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),
@@ -74,7 +78,7 @@ module.exports = {
                     count: Joi.number().integer().required()
                 }),
                 data: Joi.object({
-                    result: Joi.array().items(userSchema)
+                    result: Joi.array().items(notificationSchema)
                 })
             })
         }

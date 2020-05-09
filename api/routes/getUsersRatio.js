@@ -11,6 +11,8 @@ module.exports = {
     path: '/api/users/ratio/{filter}',
     handler: async (req, toolkit) => {
         var count, query;
+
+        // Query building
         switch (req.params.filter) {
             case "typology":
                 count = db.countDistinct('typology').from('users').whereNotNull('typology');
@@ -28,6 +30,7 @@ module.exports = {
 
         filterCount.count = parseInt(filterCount.count, 10);
 
+        // Query execution and response building
         return await query
             .then(result => {
                 return toolkit.response({
@@ -46,11 +49,13 @@ module.exports = {
         notes: 'Returns users ratio',
         tags: ['api'],
         validate: {
+            // Input validation
             params: Joi.object().keys({
                 filter: Joi.string().required().description('the filter to which the ratio applies (typology or status)')
             })
         },
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),

@@ -1,7 +1,7 @@
 const Joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 const db = require('../config/database');
 
-const userSchema = Joi.object({
+const interventionSchema = Joi.object({
     name: Joi.string().required(),
     nature: Joi.string().required(),
     date: Joi.date().required(),
@@ -14,11 +14,13 @@ module.exports = {
     handler: async (req, toolkit) => {
         var count, query;
 
+        // Query building
         if (req.params.month) {
             var dateStart, dateEnd, currentMonth, nextMonth;
 
             currentMonth = req.params.month;
 
+            // If December, next month is January
             if (currentMonth === 12) {
                 nextMonth = '01';
                 dateEnd = '2020-' + nextMonth + '-01';
@@ -26,6 +28,7 @@ module.exports = {
             else { 
                 nextMonth = currentMonth + 1;
 
+                // Month construction in the format "2-digit"
                 if (currentMonth < 10) {
                     currentMonth = '0' + currentMonth.toString();
                     if (currentMonth < 9) {
@@ -51,6 +54,7 @@ module.exports = {
 
         interventionCount.count = parseInt(interventionCount.count, 10);
 
+        // Query execution and response building
         return await query
             .then(result => {
                 return toolkit.response({
@@ -69,12 +73,14 @@ module.exports = {
         notes: 'Returns user interventions as an array of objects',
         tags: ['api'],
         validate: {
+            // Input validation
             params: Joi.object().keys({
                 user_id: Joi.number().min(1).required().description('the user ID'),
                 month: Joi.number().min(1).max(12).description('the month from 1 to 12 (optional)')
             })
         },
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),
@@ -83,7 +89,7 @@ module.exports = {
                     count: Joi.number().integer().required()
                 }),
                 data: Joi.object({
-                    result: Joi.array().items(userSchema)
+                    result: Joi.array().items(interventionSchema)
                 })
             })
         }

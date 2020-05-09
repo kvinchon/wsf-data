@@ -13,6 +13,7 @@ module.exports = {
     handler: async (req, toolkit) => {
         var count, subquery, query;
 
+        // Query building
         switch (req.params.time_period) {
             case "week":
                 count = db.countDistinct('date').from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-08 00:00:00');
@@ -36,6 +37,7 @@ module.exports = {
 
         panelsCount.count = parseInt(panelsCount.count, 10);
 
+        // Query execution and response building
         return await query
             .then(result => {
                 return toolkit.response({
@@ -54,11 +56,13 @@ module.exports = {
         notes: 'Returns panels production and consumption as an array of objects',
         tags: ['api'],
         validate: {
+            // Input validation
             params: Joi.object().keys({
                 time_period: Joi.string().required().description('the period of time taken into account (week, month or total)')
             })
         },
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),

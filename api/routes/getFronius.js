@@ -13,6 +13,7 @@ module.exports = {
     handler: async (req, toolkit) => {
         var count, sq1, sq2, query;
 
+        // Query building
         count = db.countDistinct('timestamp').from('history_fronius_1').where('var_name', 'production').andWhere('value', '>', 0).andWhere('timestamp', '>=', '2020-01-01 00:00:00').andWhere('timestamp', '<', '2020-01-02 00:00:00');
         sq1 = db.select('device_id', 'timestamp', db.raw('value AS production')).from('history_fronius_1').where('var_name', 'production').andWhere('value', '>', 0).andWhere('timestamp', '>=', '2020-01-01 00:00:00').andWhere('timestamp', '<', '2020-01-02 00:00:00');
         sq2 = db.select('device_id', 'timestamp', db.raw('value AS consumption')).from('history_fronius_1').where('var_name', 'FromGenToConsumer').andWhere('value', '>', 0).andWhere('timestamp', '>=', '2020-01-01 00:00:00').andWhere('timestamp', '<', '2020-01-02 00:00:00');
@@ -24,6 +25,7 @@ module.exports = {
 
         froniusCount.count = parseInt(froniusCount.count, 10);
 
+        // Query execution and response building
         return await query
             .then(result => {
                 if (result.rows) {
@@ -46,6 +48,7 @@ module.exports = {
         notes: 'Returns fronius production and consumption as an array of objects',
         tags: ['api'],
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),

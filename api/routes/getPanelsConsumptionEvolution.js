@@ -12,6 +12,7 @@ module.exports = {
     handler: async (req, toolkit) => {
         var sq1, sq2, sq3, query;
 
+        // Query building
         switch (req.params.time_period) {
             case "today":
                 sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-12-01' AND date < '2019-12-02'", ['from_gen_to_consumer', 'from_grid_to_consumer', 'from_gen_to_batt', 'consumption', req.params.user_id]);
@@ -39,9 +40,11 @@ module.exports = {
                 break;
         }
 
+        // Query execution and response building
         return await query
             .then(result => {
                 result = result.rows;
+
                 return toolkit.response({
                     statusCode: 200,
                     message: 'Successful',
@@ -60,12 +63,14 @@ module.exports = {
         notes: 'Returns panels consumption evolution as an array of objects',
         tags: ['api'],
         validate: {
+            // Input validation
             params: Joi.object().keys({
                 time_period: Joi.string().required().description('the period of time taken into account (today, week, month or total)'),
                 user_id: Joi.number().min(1).required().description('the user ID (optional)')
             })
         },
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),

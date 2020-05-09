@@ -12,6 +12,8 @@ module.exports = {
     path: '/api/users/status/{status}',
     handler: async (req, toolkit) => {
         var count, subquery, query;
+
+        // Query building
         switch (req.params.status) {
             case "lead":
                 count = db.countDistinct('status').from('users').where('status', '=', 'lead');
@@ -36,13 +38,11 @@ module.exports = {
 
         statusCount.count = parseInt(statusCount.count, 10);
 
+        // Query execution and response building
         return await query
             .then(result => {
-                result = [{
-                    status: result.rows[0].status,
-                    total: result.rows[0].total,
-                    new: result.rows[0].new,
-                }];
+                result = result.rows;
+
                 return toolkit.response({
                     statusCode: 200,
                     message: 'Successful',
@@ -59,11 +59,13 @@ module.exports = {
         notes: 'Returns number of users',
         tags: ['api'],
         validate: {
+            // Input validation
             params: Joi.object().keys({
                 status: Joi.string().required().description('the user status (lead or prospect)')
             })
         },
         response: {
+            // Output validation
             schema: Joi.object({
                 statusCode: Joi.number().integer().required(),
                 message: Joi.string().required(),
