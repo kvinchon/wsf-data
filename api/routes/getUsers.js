@@ -30,12 +30,12 @@ module.exports = {
         if (req.params.user_id) {
             count = db.count().from('users').where('id', req.params.user_id);
             subquery = db.select('id', 'date', db.raw('SUM(?? + ?? + ??) as consumption', ['from_gen_to_consumer', 'from_gen_to_batt', 'from_grid_to_consumer'])).from('history_daily_1').where('user_id', req.params.user_id).groupBy('id', 'date').orderBy('date');
-            query = db.raw("SELECT u.*, COUNT(DISTINCT ui.date)::int as total_interventions, ROUND(AVG(sq.consumption)::numeric / 1000, 1)::float as daily_consumption FROM (??) as sq, users u INNER JOIN users_intervention ui ON u.id = ui.user_id WHERE u.id = ?? AND ui.date < '2019-12-01' GROUP BY u.id", [subquery, req.params.user_id]);
+            query = db.raw("SELECT u.*, COUNT(DISTINCT ui.date)::int as total_interventions, ROUND(AVG(sq.consumption)::numeric / 1000, 1)::float as daily_consumption FROM (??) as sq, users u INNER JOIN users_intervention ui ON u.id = ui.user_id WHERE u.id = ?? AND ui.date < '2019-12-01' GROUP BY u.id LIMIT ?? OFFSET ??", [subquery, req.params.user_id, req.query.limit, req.query.offset]);
         }
         else {
             count = db.count().from('users');
             subquery = db.raw("SELECT ui.status as st, u.first_name, u.last_name, u.email, u.typology, u.status, u.id, u.created_on FROM users u LEFT JOIN users_intervention ui ON u.id = ui.user_id WHERE ui.status IN ('urgent', 'à venir') OR ui.status IS NULL GROUP BY st, u.first_name, u.last_name, u.email, u.typology, u.status, u.id, u.created_on");
-            query = db.raw("SELECT MAX(sq.st) as intervention, sq.first_name, sq.last_name, sq.email, sq.typology, sq.status, sq.id, sq.created_on FROM (??) as sq GROUP BY sq.first_name, sq.last_name, sq.email, sq.typology, sq.status, sq.id, sq.created_on ORDER BY sq.created_on DESC", subquery);
+            query = db.raw("SELECT MAX(sq.st) as intervention, sq.first_name, sq.last_name, sq.email, sq.typology, sq.status, sq.id, sq.created_on FROM (??) as sq GROUP BY sq.first_name, sq.last_name, sq.email, sq.typology, sq.status, sq.id, sq.created_on ORDER BY sq.created_on DESC LIMIT ?? OFFSET ??", [subquery, req.query.limit, req.query.offset]);
         }
 
         var usersCount = await count.then(result => {

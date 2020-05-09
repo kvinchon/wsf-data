@@ -140,6 +140,9 @@
                     </card>
                   </div>
                 </div>
+                <div class="div-notif-plus" v-if="notifications.data.full === false">
+                  <button class="btn-notif-plus" @click="getAllNotifications">En voir plus</button>
+                </div>
               </card>
             </div>
           </div>
@@ -198,7 +201,9 @@ export default {
       },
       notifications: {
         data: {
-          items: []
+          items: [],
+          time_period: "",
+          full: false
         },
         options: {
           id: "notifications"
@@ -210,6 +215,10 @@ export default {
   methods: {
     reloadNotifications(value) {
       this.getNotifications(value, this.notifications);
+    },
+    getAllNotifications() {
+      var time_period = this.notifications.data.time_period;
+      this.getNotifications(time_period, this.notifications, 10, 5);
     },
     getAdvisorObjectives(advisor_id, card) {
       card.isLoaded = false;
@@ -293,12 +302,20 @@ export default {
     getLocation(item) {
       this.$router.push({ name: "UserProfile", params: { id: item.id } });
     },
-    getNotifications(time_period, card) {
+    getNotifications(time_period, card, limit=5, offset=0) {
       card.isLoaded = false;
-      card.data.items = [];
+      card.data.time_period = time_period;
+      
+      if (offset === 0) {
+        card.data.items = [];
+        card.data.full = false;
+      }
+      else {
+        card.data.full = true;
+      }
 
       axios
-        .get("http://localhost:3000/api/notifications/" + time_period)
+        .get("http://localhost:3000/api/notifications/" + time_period + "?limit=" + limit + "&offset=" + offset)
         .then(response => {
           var result = response.data.data.result;
           var startDate, endDate;
@@ -452,6 +469,20 @@ export default {
 }
 .btn-notif {
   margin-left: 10px;
+}
+.div-notif-plus {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+.btn-notif-plus {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  color: #069;
+  text-decoration: none;
+  cursor: pointer;
+  text-align: center;
 }
 </style>
 <style>

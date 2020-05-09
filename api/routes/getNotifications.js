@@ -21,19 +21,19 @@ module.exports = {
         switch (req.params.time_period) {
             case "today":
                 count = db.count().from('notification').where('date', '>=', '2019-12-31').andWhere('date', '<', '2020-01-01');
-                query = db.raw("SELECT u.id, u.first_name, u.last_name, n.category, n.date, n.status, n.care FROM notification n INNER JOIN users u ON n.user_id = u.id WHERE n.date >= '2019-12-31' AND n.date < '2020-01-01' ORDER BY (case n.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), n.date DESC");
+                query = db.raw("SELECT u.id, u.first_name, u.last_name, n.category, n.date, n.status, n.care FROM notification n INNER JOIN users u ON n.user_id = u.id WHERE n.date >= '2019-12-31' AND n.date < '2020-01-01' ORDER BY (case n.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), n.date DESC LIMIT ?? OFFSET ??", [req.query.limit, req.query.offset]);
                 break;
             case "week":
                 count = db.count().from('notification').where('date', '>=', '2019-12-25').andWhere('date', '<', '2020-01-01');
-                query = db.raw("SELECT u.id, u.first_name, u.last_name, n.category, n.date, n.status, n.care FROM notification n INNER JOIN users u ON n.user_id = u.id WHERE n.date >= '2019-12-25' AND n.date < '2020-01-01' ORDER BY (case n.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), n.date DESC");
+                query = db.raw("SELECT u.id, u.first_name, u.last_name, n.category, n.date, n.status, n.care FROM notification n INNER JOIN users u ON n.user_id = u.id WHERE n.date >= '2019-12-25' AND n.date < '2020-01-01' ORDER BY (case n.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), n.date DESC LIMIT ?? OFFSET ??", [req.query.limit, req.query.offset]);
                 break;
             case "month":
                 count = db.count().from('notification').where('date', '>=', '2019-12-01').andWhere('date', '<', '2020-01-01');
-                query = db.raw("SELECT u.id, u.first_name, u.last_name, n.category, n.date, n.status, n.care FROM notification n INNER JOIN users u ON n.user_id = u.id WHERE n.date >= '2019-12-01' AND n.date < '2020-01-01' ORDER BY (case n.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), n.date DESC");
+                query = db.raw("SELECT u.id, u.first_name, u.last_name, n.category, n.date, n.status, n.care FROM notification n INNER JOIN users u ON n.user_id = u.id WHERE n.date >= '2019-12-01' AND n.date < '2020-01-01' ORDER BY (case n.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), n.date DESC LIMIT ?? OFFSET ??", [req.query.limit, req.query.offset]);
                 break;
             case "total":
                 count = db.count().from('notification');
-                query = db.raw("SELECT u.id, u.first_name, u.last_name, n.category, n.date, n.status, n.care FROM notification n INNER JOIN users u ON n.user_id = u.id ORDER BY (case n.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), n.date DESC");
+                query = db.raw("SELECT u.id, u.first_name, u.last_name, n.category, n.date, n.status, n.care FROM notification n INNER JOIN users u ON n.user_id = u.id ORDER BY (case n.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), n.date DESC LIMIT ?? OFFSET ??", [req.query.limit, req.query.offset]);
                 break;
         }
 
@@ -66,6 +66,11 @@ module.exports = {
             // Input validation
             params: Joi.object().keys({
                 time_period: Joi.string().required().description('the period of time taken into account (today, week, month or total)')
+            }),
+            // Query parameters
+            query: Joi.object({
+                limit: Joi.number().integer().min(1).max(100).default(5),
+                offset: Joi.number().integer().min(0).default(0)
             })
         },
         response: {

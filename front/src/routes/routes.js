@@ -3,14 +3,11 @@ import DashboardLayout from '../layout/DashboardLayout.vue'
 import NotFound from '../pages/NotFoundPage.vue'
 
 // Admin pages
-import Overview from 'src/pages/Overview.vue'
+import Home from 'src/pages/Home.vue'
+import UserList from 'src/pages/UserList.vue'
 import UserProfile from 'src/pages/UserProfile.vue'
-import TableList from 'src/pages/TableList.vue'
 import Statistics from 'src/pages/Statistics.vue'
 import Chat from 'src/pages/Chat.vue'
-import Icons from 'src/pages/Icons.vue'
-import Maps from 'src/pages/Maps.vue'
-import Notifications from 'src/pages/Notifications.vue'
 
 const routes = [
   {
@@ -25,13 +22,13 @@ const routes = [
     children: [
       {
         path: 'home',
-        name: 'Accueil',
-        component: Overview
+        name: 'Home',
+        component: Home
       },
       {
         path: 'user',
-        name: 'Liste',
-        component: TableList
+        name: 'UserList',
+        component: UserList
       },
       {
         path: 'user/:id',
@@ -40,29 +37,14 @@ const routes = [
       },
       {
         path: 'stats',
-        name: 'Statistiques',
+        name: 'Statistics',
         component: Statistics
       },
-      {
+      /*{
         path: 'chat',
         name: 'Chat',
         component: Chat
-      },
-      {
-        path: 'icons',
-        name: 'Icons',
-        component: Icons
-      },
-      {
-        path: 'maps',
-        name: 'Maps',
-        component: Maps
-      },
-      {
-        path: 'notifications',
-        name: 'Notifications',
-        component: Notifications
-      }
+      },*/
     ]
   },
   { path: '*', component: NotFound }

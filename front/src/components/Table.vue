@@ -39,7 +39,9 @@
         return item[column.toLowerCase()]
       },
       userProfile: function(item) {
-        this.$router.push({ name: 'UserProfile', params: { id: item.id} })
+        if (item.status === 'Client') {
+          this.$router.push({ name: 'UserProfile', params: { id: item.id} });
+        }
       }
     }
   }
