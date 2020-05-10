@@ -8,7 +8,7 @@
               <h4 class="card-title">Liste des utilisateurs</h4>
             </template>
             <l-table
-              class="table-hover table-striped"
+              class="table-hover table-striped table-users"
               :columns="users.columns"
               :data="users.data"
               :clickable="true"
@@ -81,4 +81,7 @@ export default {
 };
 </script>
 <style>
+.table-users:hover {
+  cursor: pointer;
+}
 </style>

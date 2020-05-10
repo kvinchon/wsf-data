@@ -140,7 +140,7 @@
                     </card>
                   </div>
                 </div>
-                <div class="div-notif-plus" v-if="notifications.data.full === false">
+                <div class="div-notif-plus" v-if="notifications.data.count > 5 && notifications.data.full === false">
                   <button class="btn-notif-plus" @click="getAllNotifications">En voir plus</button>
                 </div>
               </card>
@@ -203,7 +203,8 @@ export default {
         data: {
           items: [],
           time_period: "",
-          full: false
+          full: false,
+          count: 0
         },
         options: {
           id: "notifications"
@@ -214,11 +215,11 @@ export default {
   },
   methods: {
     reloadNotifications(value) {
-      this.getNotifications(value, this.notifications);
+      this.getNotifications(1, value, this.notifications);
     },
     getAllNotifications() {
       var time_period = this.notifications.data.time_period;
-      this.getNotifications(time_period, this.notifications, 10, 5);
+      this.getNotifications(1, time_period, this.notifications, 10, 5);
     },
     getAdvisorObjectives(advisor_id, card) {
       card.isLoaded = false;
@@ -302,7 +303,7 @@ export default {
     getLocation(item) {
       this.$router.push({ name: "UserProfile", params: { id: item.id } });
     },
-    getNotifications(time_period, card, limit=5, offset=0) {
+    getNotifications(advisor_id, time_period, card, limit=5, offset=0) {
       card.isLoaded = false;
       card.data.time_period = time_period;
       
@@ -315,11 +316,13 @@ export default {
       }
 
       axios
-        .get("http://localhost:3000/api/notifications/" + time_period + "?limit=" + limit + "&offset=" + offset)
+        .get("http://localhost:3000/api/notifications/" + advisor_id + "/" + time_period + "?limit=" + limit + "&offset=" + offset)
         .then(response => {
+          var count = response.data.meta.totalCount;
           var result = response.data.data.result;
           var startDate, endDate;
           card.isLoaded = true;
+          card.data.count = count;
 
           result.forEach(element => {
             startDate = new Date(Date.parse(element.date));
@@ -354,7 +357,7 @@ export default {
     this.getAdvisorAppointments(advisorId, this.appointments);
     this.getUsersRatioByFilter("typology", this.typologyRatio);
     this.getUsersRatioByFilter("status", this.statusRatio);
-    this.getNotifications("month", this.notifications);
+    this.getNotifications(advisorId, "month", this.notifications);
   }
 };
 </script>

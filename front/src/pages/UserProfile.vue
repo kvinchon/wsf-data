@@ -194,8 +194,10 @@
                   :key="month.name"
                   :value="month.value"
                   :onClick="getInterventionsByMonth"
-                  class="btn btn-primary btn-fill"
+                  class="btn btn-primary btn-fill btn-interventions"
+                  v-bind:class="month.class"
                 >{{month.name}}</base-button>
+                <img src="/img/faces/ilio.png" alt="ilio" class="img-interventions" />
               </div>
             </div>
           </card>
@@ -246,7 +248,10 @@ export default {
             type: "bar",
             height: 130,
             stacked: true,
-            stackType: "100%"
+            stackType: "100%",
+            toolbar: {
+              show: false
+            }
           },
           plotOptions: {
             bar: {
@@ -279,11 +284,7 @@ export default {
             show: false
           },
           tooltip: {
-            y: {
-              formatter: function(val) {
-                return val + "K";
-              }
-            }
+            enabled: false
           },
           fill: {
             opacity: 1
@@ -294,7 +295,8 @@ export default {
           },
           grid: {
             show: false
-          }
+          },
+          colors: ['#69AF23', '#F17E7F']
         },
         isLoaded: false
       },
@@ -306,7 +308,10 @@ export default {
             type: "bar",
             height: 130,
             stacked: true,
-            stackType: "100%"
+            stackType: "100%",
+            toolbar: {
+              show: false
+            }
           },
           plotOptions: {
             bar: {
@@ -339,11 +344,7 @@ export default {
             show: false
           },
           tooltip: {
-            y: {
-              formatter: function(val) {
-                return val + "K";
-              }
-            }
+            enabled: false
           },
           fill: {
             opacity: 1
@@ -354,7 +355,8 @@ export default {
           },
           grid: {
             show: false
-          }
+          },
+          colors: ['#69AF23', '#F17E7F']
         },
         isLoaded: false
       },
@@ -366,18 +368,18 @@ export default {
         isLoaded: false
       },
       months: [
-        { name: "Janvier", value: 1 },
-        { name: "Février", value: 2 },
-        { name: "Mars", value: 3 },
-        { name: "Avril", value: 4 },
-        { name: "Mai", value: 5 },
-        { name: "Juin", value: 6 },
-        { name: "Juillet", value: 7 },
-        { name: "Août", value: 8 },
-        { name: "Septembre", value: 9 },
-        { name: "Octobre", value: 10 },
-        { name: "Novembre", value: 11 },
-        { name: "Décembre", value: 12 }
+        { name: "Janvier", value: 1, class: "btn-interventions-1" },
+        { name: "Février", value: 2, class: "btn-interventions-2" },
+        { name: "Mars", value: 3, class: "btn-interventions-3" },
+        { name: "Avril", value: 4, class: "btn-interventions-4" },
+        { name: "Mai", value: 5, class: "btn-interventions-5" },
+        { name: "Juin", value: 6, class: "btn-interventions-6" },
+        { name: "Juillet", value: 7, class: "btn-interventions-7" },
+        { name: "Août", value: 8, class: "btn-interventions-8" },
+        { name: "Septembre", value: 9, class: "btn-interventions-9" },
+        { name: "Octobre", value: 10, class: "btn-interventions-10" },
+        { name: "Novembre", value: 11, class: "btn-interventions-11" },
+        { name: "Décembre", value: 12, class: "btn-interventions-12" }
       ]
     };
   },
@@ -623,5 +625,78 @@ export default {
 }
 .btnUserInfo:focus {
   outline: 0;
+}
+.btn-interventions, .btn-interventions:hover, .btn-interventions:active:hover {
+  background: linear-gradient(
+    180deg,
+    #e3edf7 0%,
+    rgba(227, 237, 247, 0.5) 100%
+  );
+  border-radius: 50px;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: 0.01em;
+  color: #0b74c0;
+  height: 80px;
+  border: none;
+}
+.btn-interventions:hover,
+.btn-interventions:focus {
+  border: 2px solid #0b74c0;
+}
+.btn-interventions:focus {
+  font-style: normal;
+  font-weight: bold;
+  line-height: 19px;
+  letter-spacing: 0.01em;
+  color: #0b74c0;
+  background: linear-gradient(179.97deg, #FFFFFF 0.05%, rgba(255, 255, 255, 0) 166.1%);
+}
+.btn-interventions-9,
+.btn-interventions-10,
+.btn-interventions-11,
+.btn-interventions-12 {
+  color: #ffffff;
+}
+.btn-interventions-9 {
+  background: linear-gradient(90deg, #00aaff 0.23%, #0b74c0 100%);
+}
+.btn-interventions-10 {
+  background: linear-gradient(90deg, #00aaff 0%, #23d2b5 99.77%);
+}
+.btn-interventions-11 {
+  background: linear-gradient(90deg, #00aaff 0.11%, #23d2b5 99.89%);
+}
+.btn-interventions-12 {
+  background: linear-gradient(90deg, #e74a50 7.35%, #f78a31 100%);
+}
+.btn-interventions-2,
+.btn-interventions-5,
+.btn-interventions-8,
+.btn-interventions-11 {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.btn-interventions-1,
+.btn-interventions-3,
+.btn-interventions-8 {
+  margin-top: 100px;
+}
+.btn-interventions-5,
+.btn-interventions-10,
+.btn-interventions-12 {
+  margin-top: -100px;
+}
+.img-interventions {
+  position: absolute;
+  top: 260px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 140px;
+  border-radius: 50%;
 }
 </style>

@@ -10,14 +10,19 @@ const appointmentsSchema = Joi.object({
 
 module.exports = {
     method: 'GET',
-    path: '/api/appointments/{advisor_id}',
+    path: '/api/appointments/{advisor_id}/{today?}',
     handler: async (req, toolkit) => {
         var count, query;
 
         // Query building
-        if (req.params.advisor_id) {
+        if (req.params.today) {
+            count = db.count().from('advisor_appointment').where('advisor_id', req.params.advisor_id).andWhere('date', '2019-12-31');
+            query = db.select('users.last_name as household', 'advisor_appointment.method', 'advisor_appointment.subject', 'advisor_appointment.date').from('advisor_appointment').innerJoin('users', 'advisor_appointment.user_id', 'users.id').where('advisor_appointment.advisor_id', req.params.advisor_id).andWhere('advisor_appointment.date', '2019-12-31').orderBy('advisor_appointment.date');
+        }
+        else {
             count = db.count().from('advisor_appointment').where('advisor_id', req.params.advisor_id);
             query = db.select('users.last_name as household', 'advisor_appointment.method', 'advisor_appointment.subject', 'advisor_appointment.date').from('advisor_appointment').innerJoin('users', 'advisor_appointment.user_id', 'users.id').where('advisor_appointment.advisor_id', req.params.advisor_id).andWhere('advisor_appointment.date', '>=', '2019-12-31 00:00:00').orderBy('advisor_appointment.date');
+        
         }
         
         var appointmentsCount = await count.then(result => {
@@ -41,13 +46,14 @@ module.exports = {
             });
     },
     options: {
-        description: 'Get appointments by advisor id',
+        description: 'Get appointments by advisor id and today (optional)',
         notes: 'Returns appointments as an array of objects',
         tags: ['api'],
         validate: {
             // Input validation
             params: Joi.object().keys({
-                advisor_id: Joi.number().required().description('the advisor ID')
+                advisor_id: Joi.number().required().description('the advisor ID'),
+                today: Joi.string().description('A string equal to today (optional)')
             })
         },
         response: {

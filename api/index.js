@@ -50,7 +50,7 @@ const Pack = require('./package');
     server.route(require('./routes/getUserInterventions'));
     server.route(require('./routes/getPanelsProductionEvolution'));
     server.route(require('./routes/getPanelsConsumptionEvolution'));
-    server.route(require('./routes/getNotifications'));
+    server.route(require('./routes/getAdvisorNotifications'));
     server.route(require('./routes/getAdvisorObjectives'));
     server.route(require('./routes/getAdvisorAppointments'));
 })();

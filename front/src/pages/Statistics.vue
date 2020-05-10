@@ -163,18 +163,22 @@ export default {
         options: {
           chart: {
             id: "production-consumption",
-            type: "area",
-            height: 350
+            type: "line",
+            height: 350,
+            toolbar: {
+              show: false
+            }
           },
           xaxis: {
             categories: []
           },
           stroke: {
-            curve: "smooth"
+            curve: "straight"
           },
           dataLabels: {
             enabled: false
-          }
+          },
+          colors: ['#69AF23', '#F17E7F']
         },
         series: [
           {
@@ -196,7 +200,10 @@ export default {
             type: "bar",
             height: 130,
             stacked: true,
-            stackType: "100%"
+            stackType: "100%",
+            toolbar: {
+              show: false
+            }
           },
           plotOptions: {
             bar: {
@@ -244,7 +251,8 @@ export default {
           },
           grid: {
             show: false
-          }
+          },
+          colors: ['#69AF23', '#F17E7F']
         },
         isLoaded: false
       },
@@ -256,7 +264,10 @@ export default {
             type: "bar",
             height: 130,
             stacked: true,
-            stackType: "100%"
+            stackType: "100%",
+            toolbar: {
+              show: false
+            }
           },
           plotOptions: {
             bar: {
@@ -304,7 +315,8 @@ export default {
           },
           grid: {
             show: false
-          }
+          },
+          colors: ['#69AF23', '#F17E7F']
         },
         isLoaded: false
       },
@@ -474,7 +486,7 @@ export default {
             );
             element.consumption = element.consumption.toString() + " kWh";
             element.equipment_ratio =
-              element.equipment_ratio.toString().replace(".", ",") + " %";
+              element.equipment_ratio.toString().replace(".", ",") + "%";
             table.data.push(element);
           });
         })
@@ -504,7 +516,7 @@ export default {
             );
             element.category = this.capitalizeFirstLetter(element.category);
             element.intervention_ratio =
-              element.intervention_ratio.toString().replace(".", ",") + " %";
+              element.intervention_ratio.toString().replace(".", ",") + "%";
             table.data.push(element);
           });
         })
