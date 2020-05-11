@@ -16,12 +16,12 @@ module.exports = {
         // Query building
         switch (req.params.time_period) {
             case "week":
-                count = db.countDistinct('date').from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-08 00:00:00');
-                subquery = db.select('id', 'date', db.raw('SUM(?? + ?? + ??) AS ??', ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production']), db.raw('SUM(?? + ??) AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'consumption'])).from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2019-12-08 00:00:00').groupBy('id', 'date').orderBy('date');
+                count = db.countDistinct('date').from('history_daily_1').where('date', '>=', '2019-12-25').andWhere('date', '<', '2020-01-01');
+                subquery = db.select('id', 'date', db.raw('SUM(?? + ?? + ??) AS ??', ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production']), db.raw('SUM(?? + ??) AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'consumption'])).from('history_daily_1').where('date', '>=', '2019-12-25').andWhere('date', '<', '2020-01-01').groupBy('id', 'date').orderBy('date');
                 break;
             case "month":
-                count = db.countDistinct('date').from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2020-01-01 00:00:00');
-                subquery = db.select('id', 'date', db.raw('SUM(?? + ?? + ??) AS ??', ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production']), db.raw('SUM(?? + ??) AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'consumption'])).from('history_daily_1').where('date', '>=', '2019-12-01 00:00:00').andWhere('date', '<', '2020-01-01 00:00:00').groupBy('id', 'date').orderBy('date');
+                count = db.countDistinct('date').from('history_daily_1').where('date', '>=', '2019-12-01').andWhere('date', '<', '2020-01-01');
+                subquery = db.select('id', 'date', db.raw('SUM(?? + ?? + ??) AS ??', ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production']), db.raw('SUM(?? + ??) AS ??', ['from_gen_to_consumer', 'from_gen_to_batt', 'consumption'])).from('history_daily_1').where('date', '>=', '2019-12-01').andWhere('date', '<', '2020-01-01').groupBy('id', 'date').orderBy('date');
                 break;
             case "total":
                 count = db.countDistinct('date').from('history_daily_1');

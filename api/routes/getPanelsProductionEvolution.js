@@ -15,12 +15,12 @@ module.exports = {
         // Query building
         switch (req.params.time_period) {
             case "today":
-                sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-12-01' AND date < '2019-12-02'", ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production', req.params.user_id]);
-                sq2 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-11-30' AND date < '2019-12-01'", ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production_old', req.params.user_id]);
+                sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date = '2019-12-31'", ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production', req.params.user_id]);
+                sq2 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date = '2019-12-30'", ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production_old', req.params.user_id]);
                 break;
             case "week":
-                sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-12-01' AND date < '2019-12-08'", ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production', req.params.user_id]);
-                sq2 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-11-24' AND date < '2019-12-01'", ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production_old', req.params.user_id]);
+                sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-12-25' AND date < '2020-01-01'", ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production', req.params.user_id]);
+                sq2 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-12-18' AND date < '2019-12-25'", ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production_old', req.params.user_id]);
                 break;
             case "month":
                 sq1 = db.raw("SELECT SUM(?? + ?? + ??) AS ?? FROM history_daily_1 WHERE user_id = ?? AND date >= '2019-12-01' AND date < '2020-01-01'", ['from_gen_to_consumer', 'from_gen_to_grid', 'from_gen_to_batt', 'production', req.params.user_id]);

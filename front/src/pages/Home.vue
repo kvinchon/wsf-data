@@ -42,7 +42,8 @@
                   <h4 class="card-title">Rendez-vous</h4>
                   <button class="btn btn-primary btn-sm btn-home">Ajouter</button>
                 </template>
-                <calendar class="calendar"
+                <calendar
+                  class="calendar"
                   is-expanded
                   :min-date="new Date('2019-01-01')"
                   :max-date="new Date('2020-01-31')"
@@ -68,37 +69,39 @@
         <div class="col-md-4">
           <div class="row">
             <div class="col-md-12">
-              <div v-if="typologyRatio.series">
-                <chart-card
-                  :id="typologyRatio.options.chart.id"
-                  :type="typologyRatio.type"
-                  :height="typologyRatio.height"
-                  :options="typologyRatio.options"
-                  :series="typologyRatio.series"
-                >
-                  <template slot="header">
-                    <h4 class="card-title">Répartition des clients par typologie</h4>
-                  </template>
-                </chart-card>
-              </div>
+              <card>
+                <template slot="header">
+                  <h4 class="card-title">Répartition des clients par typologie</h4>
+                </template>
+                <div v-if="typologyRatio.series">
+                  <chart-card
+                    :id="typologyRatio.options.chart.id"
+                    :type="typologyRatio.type"
+                    :height="typologyRatio.height"
+                    :options="typologyRatio.options"
+                    :series="typologyRatio.series"
+                  ></chart-card>
+                </div>
+              </card>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-12">
-              <div v-if="statusRatio.series">
-                <chart-card
-                  :id="statusRatio.options.chart.id"
-                  :type="statusRatio.type"
-                  :height="statusRatio.height"
-                  :options="statusRatio.options"
-                  :series="statusRatio.series"
-                >
-                  <template slot="header">
-                    <h4 class="card-title">Répartition des utilisateurs par statut</h4>
-                  </template>
-                </chart-card>
-              </div>
+              <card>
+                <template slot="header">
+                  <h4 class="card-title">Répartition des utilisateurs par statut</h4>
+                </template>
+                <div v-if="statusRatio.series">
+                  <chart-card
+                    :id="statusRatio.options.chart.id"
+                    :type="statusRatio.type"
+                    :height="statusRatio.height"
+                    :options="statusRatio.options"
+                    :series="statusRatio.series"
+                  ></chart-card>
+                </div>
+              </card>
             </div>
           </div>
         </div>
@@ -111,6 +114,8 @@
                   <h4 class="card-title">Notifications</h4>
                   <base-select
                     :id="notifications.options.id"
+                    :options="select.options.choices"
+                :selected="select.options.selected.default"
                     @changed="reloadNotifications"
                     class="filter-select"
                   ></base-select>
@@ -140,7 +145,10 @@
                     </card>
                   </div>
                 </div>
-                <div class="div-notif-plus" v-if="notifications.data.count > 5 && notifications.data.full === false">
+                <div
+                  class="div-notif-plus"
+                  v-if="notifications.data.count > 5 && notifications.data.full === false"
+                >
                   <button class="btn-notif-plus" @click="getAllNotifications">En voir plus</button>
                 </div>
               </card>
@@ -164,6 +172,22 @@ export default {
   },
   data() {
     return {
+      select: {
+        options: {
+          choices: [
+            { text: "Aujourd'hui", key: 1, value: "today" },
+            { text: "Semaine", key: 2, value: "week" },
+            { text: "Mois", key: 3, value: "month"},
+            { text: "Total", key: 4, value: "total" }
+          ],
+          selected: {
+            default: "month",
+            today: "today",
+            week: "week",
+            total: "total"
+          }
+        }
+      },
       objectives: {
         data: {
           items: []
@@ -184,7 +208,8 @@ export default {
           chart: {
             id: "typology-ratio"
           },
-          labels: []
+          labels: [],
+          colors: ["#005288", "#F78A31", "#69AF23", "#885AF8"]
         },
         series: []
       },
@@ -195,7 +220,8 @@ export default {
           chart: {
             id: "status-ratio"
           },
-          labels: []
+          labels: [],
+          colors: ["#2B485C", "#FBDB3C", "#910F7D"]
         },
         series: []
       },
@@ -267,8 +293,12 @@ export default {
           card.isLoaded = true;
 
           result.forEach(element => {
-            card.attributes.push({key: element.household, highlight: true, dates: new Date(element.date)});
-            
+            card.attributes.push({
+              key: element.household,
+              highlight: true,
+              dates: new Date(element.date)
+            });
+
             if (element.date) {
               element.date = new Date(Date.parse(element.date)).toLocaleString(
                 "fr-FR",
@@ -301,22 +331,30 @@ export default {
         });
     },
     getLocation(item) {
-      this.$router.push({ name: "UserProfile", params: { id: item.id } });
+      this.$router.push({ name: "Liste / Foyer", params: { id: item.id } });
     },
-    getNotifications(advisor_id, time_period, card, limit=5, offset=0) {
+    getNotifications(advisor_id, time_period, card, limit = 5, offset = 0) {
       card.isLoaded = false;
       card.data.time_period = time_period;
-      
+
       if (offset === 0) {
         card.data.items = [];
         card.data.full = false;
-      }
-      else {
+      } else {
         card.data.full = true;
       }
 
       axios
-        .get("http://localhost:3000/api/notifications/" + advisor_id + "/" + time_period + "?limit=" + limit + "&offset=" + offset)
+        .get(
+          "http://localhost:3000/api/notifications/" +
+            advisor_id +
+            "/" +
+            time_period +
+            "?limit=" +
+            limit +
+            "&offset=" +
+            offset
+        )
         .then(response => {
           var count = response.data.meta.totalCount;
           var result = response.data.data.result;
@@ -362,6 +400,17 @@ export default {
 };
 </script>
 <style scoped>
+.filter-select {
+  position: absolute;
+  top: 18px;
+  right: 15px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+  color: #6a707e;
+}
 .div-obj {
   display: inline-block;
   width: 120px;
@@ -479,9 +528,9 @@ export default {
   text-align: center;
 }
 .btn-notif-plus {
-  background: none!important;
+  background: none !important;
   border: none;
-  padding: 0!important;
+  padding: 0 !important;
   color: #069;
   text-decoration: none;
   cursor: pointer;

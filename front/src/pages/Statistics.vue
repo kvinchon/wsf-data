@@ -3,93 +3,131 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-6">
-          <card>
-            <template slot="header">
-              <h4 class="card-title">Evolution de la production et consommation (W)</h4>
-              <base-select
-                :id="productionConsumption.options.chart.id"
-                @changed="reloadProductionConsumption"
-              ></base-select>
-            </template>
-            <div v-if="productionConsumption.isLoaded">
-              <!-- If user.name exists, display user.name -->
-              <div v-if="productionConsumption.series[0].data">
-                <chart-card
-                  :id="productionConsumption.options.chart.id"
-                  :height="productionConsumption.options.chart.height"
-                  :type="productionConsumption.options.chart.type"
-                  :options="productionConsumption.options"
-                  :series="productionConsumption.series"
-                ></chart-card>
-              </div>
+          <div class="row">
+            <div class="col-md-12">
+              <card>
+                <template slot="header">
+                  <h4 class="card-title">Evolution de la production et consommation (W)</h4>
+                  <base-select
+                    class="filter-select"
+                    :id="productionConsumption.options.chart.id"
+                    :options="select.options.choices"
+                    :selected="select.options.selected.default"
+                    @changed="reloadProductionConsumption"
+                  ></base-select>
+                </template>
+                <div v-if="productionConsumption.isLoaded">
+                  <!-- If user.name exists, display user.name -->
+                  <div v-if="productionConsumption.series[0].data">
+                    <chart-card
+                      :id="productionConsumption.options.chart.id"
+                      :height="productionConsumption.options.chart.height"
+                      :type="productionConsumption.options.chart.type"
+                      :options="productionConsumption.options"
+                      :series="productionConsumption.series"
+                    ></chart-card>
+                  </div>
+                </div>
+              </card>
             </div>
-          </card>
+          </div>
         </div>
 
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-12">
-              <base-select
-                :id="consumptionRatio.chartOptions.chart.id"
-                @changed="reloadConsumptionRatio"
-              ></base-select>
-              <div v-if="consumptionRatio.isLoaded">
-                <div id="chart">
-                  <chart-card
-                    :type="consumptionRatio.chartOptions.chart.type"
-                    :height="consumptionRatio.chartOptions.chart.height"
-                    :options="consumptionRatio.chartOptions"
-                    :series="consumptionRatio.series"
-                  ></chart-card>
+              <card>
+                <template slot="header">
+                  <h4 class="card-title">Auto-consommation et consommation réseau</h4>
+                  <base-select
+                    class="filter-select"
+                    :id="consumptionRatio.chartOptions.chart.id"
+                    :options="select.options.choices"
+                    :selected="select.options.selected.default"
+                    @changed="reloadConsumptionRatio"
+                  ></base-select>
+                </template>
+                <div v-if="consumptionRatio.isLoaded">
+                  <div id="chart">
+                    <chart-card
+                      :type="consumptionRatio.chartOptions.chart.type"
+                      :height="consumptionRatio.chartOptions.chart.height"
+                      :options="consumptionRatio.chartOptions"
+                      :series="consumptionRatio.series"
+                    ></chart-card>
+                    <span class="consumption-self">Auto-consommation</span>
+                    <span class="consumption-grid">Consommation réseau</span>
+                  </div>
                 </div>
-              </div>
+              </card>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-12">
-              <base-select
-                :id="productionRatio.chartOptions.chart.id"
-                @changed="reloadProductionRatio"
-              ></base-select>
-              <div v-if="productionRatio.isLoaded">
-                <div id="chart">
-                  <chart-card
-                    :type="productionRatio.chartOptions.chart.type"
-                    :height="productionRatio.chartOptions.chart.height"
-                    :options="productionRatio.chartOptions"
-                    :series="productionRatio.series"
-                  ></chart-card>
+              <card>
+                <template slot="header">
+                  <h4 class="card-title">Auto-consommation et exportation</h4>
+                  <base-select
+                    class="filter-select"
+                    :id="productionRatio.chartOptions.chart.id"
+                    :options="select.options.choices"
+                    :selected="select.options.selected.default"
+                    @changed="reloadProductionRatio"
+                  ></base-select>
+                </template>
+                <div v-if="productionRatio.isLoaded">
+                  <div id="chart">
+                    <chart-card
+                      :type="productionRatio.chartOptions.chart.type"
+                      :height="productionRatio.chartOptions.chart.height"
+                      :options="productionRatio.chartOptions"
+                      :series="productionRatio.series"
+                    ></chart-card>
+                    <span class="production-self">Auto-consommation</span>
+                    <span class="production-export">Exportation</span>
+                  </div>
                 </div>
-              </div>
+              </card>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-6">
-              <card>
+              <card class="leads-card">
                 <template slot="header">
-                  <h4 class="card-title">Total des leads : {{this.leads.data.total}}</h4>
-                  <p
-                    class="card-category"
-                    v-if="this.leads.data.new > 1"
-                  >{{this.leads.data.new}} nouveaux leads ce mois-ci</p>
-                  <p class="card-category" v-else>{{this.leads.data.new}} nouveau lead ce mois-ci</p>
+                  <div class="leads-rectangle"></div>
+                  <div class="leads-header">
+                    <h4 class="card-title leads-title">Total des leads : {{this.leads.data.total}}</h4>
+                    <p
+                      class="card-category leads-category"
+                      v-if="this.leads.data.new > 1"
+                    >{{this.leads.data.new}} nouveaux leads ce mois-ci</p>
+                    <p
+                      class="card-category leads-category"
+                      v-else
+                    >{{this.leads.data.new}} nouveau lead ce mois-ci</p>
+                  </div>
                 </template>
               </card>
             </div>
             <div class="col-md-6">
-              <card>
+              <card class="prospects-card">
                 <template slot="header">
-                  <h4 class="card-title">Total des prospects : {{this.prospects.data.total}}</h4>
-                  <p
-                    class="card-category"
-                    v-if="this.prospects.data.new > 1"
-                  >{{this.prospects.data.new}} nouveaux prospects ce mois-ci</p>
-                  <p
-                    class="card-category"
-                    v-else
-                  >{{this.prospects.data.new}} nouveau prospect ce mois-ci</p>
+                  <div class="prospects-rectangle"></div>
+                  <div class="prospects-header">
+                    <h4
+                      class="card-title prospects-title"
+                    >Total des prospects : {{this.prospects.data.total}}</h4>
+                    <p
+                      class="card-category prospects-category"
+                      v-if="this.prospects.data.new > 1"
+                    >{{this.prospects.data.new}} nouveaux prospects ce mois-ci</p>
+                    <p
+                      class="card-category prospects-category"
+                      v-else
+                    >{{this.prospects.data.new}} nouveau prospect ce mois-ci</p>
+                  </div>
                 </template>
               </card>
             </div>
@@ -112,7 +150,6 @@
                   class="table-hover table-striped"
                   :columns="equipmentRatio.columns"
                   :data="equipmentRatio.data"
-                  :clickable="false"
                 ></l-table>
               </card>
             </div>
@@ -133,7 +170,6 @@
                   class="table-hover table-striped"
                   :columns="interventionsRatio.columns"
                   :data="interventionsRatio.data"
-                  :clickable="false"
                 ></l-table>
               </card>
             </div>
@@ -159,12 +195,28 @@ export default {
   },
   data() {
     return {
+      select: {
+        options: {
+          choices: [
+            { text: "Aujourd'hui", key: 1, value: "today" },
+            { text: "Semaine", key: 2, value: "week" },
+            { text: "Mois", key: 3, value: "month" },
+            { text: "Total", key: 4, value: "total" }
+          ],
+          selected: {
+            default: "month",
+            today: "today",
+            week: "week",
+            total: "total"
+          }
+        }
+      },
       productionConsumption: {
         options: {
           chart: {
             id: "production-consumption",
             type: "line",
-            height: 350,
+            height: 430,
             toolbar: {
               show: false
             }
@@ -178,7 +230,7 @@ export default {
           dataLabels: {
             enabled: false
           },
-          colors: ['#69AF23', '#F17E7F']
+          colors: ["#69AF23", "#F17E7F"]
         },
         series: [
           {
@@ -198,7 +250,7 @@ export default {
           chart: {
             id: "prod-ratio",
             type: "bar",
-            height: 130,
+            height: 80,
             stacked: true,
             stackType: "100%",
             toolbar: {
@@ -207,15 +259,13 @@ export default {
           },
           plotOptions: {
             bar: {
-              horizontal: true
+              horizontal: true,
+              barHeight: "100%"
             }
           },
           stroke: {
             width: 1,
             colors: ["#fff"]
-          },
-          title: {
-            text: "Auto-consommation et exportation"
           },
           xaxis: {
             categories: [],
@@ -236,23 +286,20 @@ export default {
             show: false
           },
           tooltip: {
-            y: {
-              formatter: function(val) {
-                return val + "K";
-              }
-            }
+            enabled: false
           },
           fill: {
             opacity: 1
           },
           legend: {
-            position: "bottom",
+            show: false,
+            position: "top",
             horizontalAlign: "center"
           },
           grid: {
             show: false
           },
-          colors: ['#69AF23', '#F17E7F']
+          colors: ["#69AF23", "#F17E7F"]
         },
         isLoaded: false
       },
@@ -262,7 +309,7 @@ export default {
           chart: {
             id: "cons-ratio",
             type: "bar",
-            height: 130,
+            height: 80,
             stacked: true,
             stackType: "100%",
             toolbar: {
@@ -271,15 +318,13 @@ export default {
           },
           plotOptions: {
             bar: {
-              horizontal: true
+              horizontal: true,
+              barHeight: "100%"
             }
           },
           stroke: {
             width: 1,
             colors: ["#fff"]
-          },
-          title: {
-            text: "Auto-consommation et consommation réseau"
           },
           xaxis: {
             categories: [],
@@ -300,23 +345,20 @@ export default {
             show: false
           },
           tooltip: {
-            y: {
-              formatter: function(val) {
-                return val + "K";
-              }
-            }
+            enabled: false
           },
           fill: {
             opacity: 1
           },
           legend: {
+            show: false,
             position: "bottom",
             horizontalAlign: "center"
           },
           grid: {
             show: false
           },
-          colors: ['#69AF23', '#F17E7F']
+          colors: ["#69AF23", "#F17E7F"]
         },
         isLoaded: false
       },
@@ -558,3 +600,79 @@ export default {
   }
 };
 </script>
+<style scoped>
+.filter-select {
+  position: absolute;
+  top: 18px;
+  right: 15px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+  color: #6a707e;
+}
+.leads-rectangle,
+.prospects-rectangle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 100%;
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.14);
+  border-radius: 4px 0 0 4px;
+}
+.leads-rectangle {
+  background: #fbdb3c;
+}
+.prospects-rectangle {
+  background: #910f7d;
+}
+.leads-header,
+.prospects-header {
+  padding-left: 20px;
+}
+.leads-category,
+.prospects-category {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 20px;
+  color: #000000;
+}
+.leads-title,
+.prospects-title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #192a3e;
+  margin-bottom: 10px;
+}
+.production-self,
+.production-export,
+.consumption-self,
+.consumption-grid {
+  position: relative;
+  bottom: 20px;
+  display: inline-block;
+  width: 50%;
+  font-size: 14px;
+}
+.production-self,
+.consumption-self {
+  text-align: left;
+  padding-left: 30px;
+}
+.production-export,
+.consumption-grid {
+  text-align: right;
+  padding-right: 10px;
+}
+</style>
+<style>
+.leads-card .card-header,
+.prospects-card .card-header {
+  padding: 10px;
+}
+</style>

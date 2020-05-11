@@ -20,9 +20,9 @@ module.exports = {
         // Query building
         switch (req.params.time_period) {
             case "today":
-                totalCount = db.count().from('advisor_notification').where('advisor_id', req.params.advisor_id).andWhere('date', '>=', '2019-12-31').andWhere('date', '<', '2020-01-01');
-                criticalCount = db.count().from('advisor_notification').where('advisor_id', req.params.advisor_id).andWhere('date', '>=', '2019-12-31').andWhere('date', '<', '2020-01-01').andWhere('status', 'urgent');
-                query = db.raw("SELECT u.id, u.first_name, u.last_name, an.category, an.date, an.status, an.care FROM advisor_notification an INNER JOIN users u ON an.user_id = u.id WHERE an.advisor_id = ?? AND an.date >= '2019-12-31' AND an.date < '2020-01-01' ORDER BY (case an.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), an.date DESC LIMIT ?? OFFSET ??", [req.params.advisor_id, req.query.limit, req.query.offset]);
+                totalCount = db.count().from('advisor_notification').where('advisor_id', req.params.advisor_id).andWhere('date', '2019-12-31');
+                criticalCount = db.count().from('advisor_notification').where('advisor_id', req.params.advisor_id).andWhere('date', '2019-12-31').andWhere('status', 'urgent');
+                query = db.raw("SELECT u.id, u.first_name, u.last_name, an.category, an.date, an.status, an.care FROM advisor_notification an INNER JOIN users u ON an.user_id = u.id WHERE an.advisor_id = ?? AND an.date = '2019-12-31' ORDER BY (case an.care when 'immédiatement' then 1 when 'dans la semaine' then 2 when 'durant le mois' then 3 end), an.date DESC LIMIT ?? OFFSET ??", [req.params.advisor_id, req.query.limit, req.query.offset]);
                 break;
             case "week":
                 totalCount = db.count().from('advisor_notification').where('advisor_id', req.params.advisor_id).andWhere('date', '>=', '2019-12-25').andWhere('date', '<', '2020-01-01');
@@ -94,13 +94,13 @@ module.exports = {
                 message: Joi.string().required(),
                 errors: Joi.string().allow(null),
                 meta: Joi.object({
-                    count: Joi.number().integer().required()
+                    totalCount: Joi.number().integer().required(),
+                    criticalCount: Joi.number().integer().required()
                 }),
                 data: Joi.object({
                     result: Joi.array().items(notificationSchema)
                 })
-            }),
-            failAction: 'log'
+            })
         }
     }
 }

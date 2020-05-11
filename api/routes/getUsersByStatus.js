@@ -16,18 +16,18 @@ module.exports = {
         // Query building
         switch (req.params.status) {
             case "lead":
-                count = db.countDistinct('status').from('users').where('status', '=', 'lead');
-                subquery = db.select('status', db.raw('COUNT(*)::int as new'), ).from('users').where('status', '=', 'lead').andWhere('created_on', '>=', '2020-04-01').andWhere('created_on', '<', '2020-05-01').groupBy('status');
+                count = db.countDistinct('status').from('users').where('status', 'lead');
+                subquery = db.select('status', db.raw('COUNT(*)::int as new'), ).from('users').where('status', 'lead').andWhere('created_on', '>=', '2019-12-01').andWhere('created_on', '<', '2020-01-01').groupBy('status');
                 query = db.raw("SELECT u.status, COUNT(*)::int as total, sq.new FROM(??) AS sq, users AS u WHERE u.status = 'lead' GROUP BY u.status, sq.new", subquery);
                 break;
             case "prospect":
-                count = db.countDistinct('status').from('users').where('status', '=', 'prospect');
-                subquery = db.select('status', db.raw('COUNT(*)::int as new'), ).from('users').where('status', '=', 'prospect').andWhere('created_on', '>=', '2020-04-01').andWhere('created_on', '<', '2020-05-01').groupBy('status');
+                count = db.countDistinct('status').from('users').where('status', 'prospect');
+                subquery = db.select('status', db.raw('COUNT(*)::int as new'), ).from('users').where('status', 'prospect').andWhere('created_on', '>=', '2019-12-01').andWhere('created_on', '<', '2020-01-01').groupBy('status');
                 query = db.raw("SELECT u.status, COUNT(*)::int as total, sq.new FROM(??) AS sq, users AS u WHERE u.status = 'prospect' GROUP BY u.status, sq.new", subquery);
                 break;
             case "client":
-                count = db.countDistinct('status').from('users').where('status', '=', 'client');
-                subquery = db.select('status', db.raw('COUNT(*)::int as new'), ).from('users').where('status', '=', 'client').andWhere('created_on', '>=', '2020-04-01').andWhere('created_on', '<', '2020-05-01').groupBy('status');
+                count = db.countDistinct('status').from('users').where('status', 'client');
+                subquery = db.select('status', db.raw('COUNT(*)::int as new'), ).from('users').where('status', 'client').andWhere('created_on', '>=', '2019-12-01').andWhere('created_on', '<', '2020-01-01').groupBy('status');
                 query = db.raw("SELECT u.status, COUNT(*)::int as total, sq.new FROM(??) AS sq, users AS u WHERE u.status = 'client' GROUP BY u.status, sq.new", subquery);
                 break;
         }
@@ -61,7 +61,7 @@ module.exports = {
         validate: {
             // Input validation
             params: Joi.object().keys({
-                status: Joi.string().required().description('the user status (lead or prospect)')
+                status: Joi.string().required().description('the user status (lead, prospect or client)')
             })
         },
         response: {

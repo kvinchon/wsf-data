@@ -40,7 +40,7 @@
       },
       userProfile: function(item) {
         if (item.status === 'Client') {
-          this.$router.push({ name: 'UserProfile', params: { id: item.id} });
+          this.$router.push({ name: 'Liste / Foyer', params: { id: item.id} });
         }
       }
     }

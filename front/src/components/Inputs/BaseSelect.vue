@@ -1,12 +1,12 @@
 <template>
   <div>
-    <label v-bind:for="id+'-select'">Filtrer :</label>
-    <select name="filter" v-bind:id="id+'-select'" @change="onChange($event)" v-model="selected">
+    <label v-bind:for="id+'-select'">Afficher :</label>
+    <select name="filter" v-bind:id="id+'-select'" @change="onChange($event)" v-model="select">
       <option
-        v-for="option in options"
-        v-bind:value="option.value"
-        v-bind:key="option.key"
-      >{{ option.text }}</option>
+        v-for="choice in choices"
+        v-bind:value="choice.value"
+        v-bind:key="choice.key"
+      >{{ choice.text }}</option>
     </select>
   </div>
 </template>
@@ -16,16 +16,13 @@ export default {
   name: "base-select",
   props: {
     id: String,
+    options: Array,
+    selected: String
   },
   data() {
     return {
-      selected: "month",
-      options: [
-        { text: "Aujourd'hui", key: 1, value: "today" },
-        { text: "Semaine", key: 2, value: "week" },
-        { text: "Mois", key: 3, value: "month" },
-        { text: "Total", key: 4, value: "total" }
-      ]
+      choices: this.options,
+      select: this.selected
     };
   },
   methods: {

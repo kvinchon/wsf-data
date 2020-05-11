@@ -14,9 +14,9 @@ module.exports = {
         var count, sq1, sq2, query;
 
         // Query building
-        count = db.countDistinct('timestamp').from('history_fronius_1').where('var_name', 'production').andWhere('value', '>', 0).andWhere('timestamp', '>=', '2020-01-01 00:00:00').andWhere('timestamp', '<', '2020-01-02 00:00:00');
-        sq1 = db.select('device_id', 'timestamp', db.raw('value AS production')).from('history_fronius_1').where('var_name', 'production').andWhere('value', '>', 0).andWhere('timestamp', '>=', '2020-01-01 00:00:00').andWhere('timestamp', '<', '2020-01-02 00:00:00');
-        sq2 = db.select('device_id', 'timestamp', db.raw('value AS consumption')).from('history_fronius_1').where('var_name', 'FromGenToConsumer').andWhere('value', '>', 0).andWhere('timestamp', '>=', '2020-01-01 00:00:00').andWhere('timestamp', '<', '2020-01-02 00:00:00');
+        count = db.countDistinct('timestamp').from('history_fronius_1').where('var_name', 'production').andWhere('value', '>', 0).andWhere('timestamp', '>=', '2019-12-31 00:00:00').andWhere('timestamp', '<', '2020-01-01 00:00:00');
+        sq1 = db.select('device_id', 'timestamp', db.raw('value AS production')).from('history_fronius_1').where('var_name', 'production').andWhere('value', '>', 0).andWhere('timestamp', '>=', '2019-12-31 00:00:00').andWhere('timestamp', '<', '2020-01-01 00:00:00');
+        sq2 = db.select('device_id', 'timestamp', db.raw('value AS consumption')).from('history_fronius_1').where('var_name', 'FromGenToConsumer').andWhere('value', '>', 0).andWhere('timestamp', '>=', '2019-12-31 00:00:00').andWhere('timestamp', '<', '2020-01-01 00:00:00');
         query = db.raw("SELECT sq1.timestamp, ROUND(AVG(sq1.production)::numeric, 2)::float AS value, 'production' AS source FROM (??) AS sq1 GROUP BY sq1.timestamp, source UNION SELECT sq2.timestamp, ROUND(AVG(sq2.consumption)::numeric, 2)::float AS value, 'consumption' as source FROM (??) AS sq2 GROUP BY sq2.timestamp ORDER BY timestamp", [sq1, sq2]);
 
         var froniusCount = await count.then(result => {

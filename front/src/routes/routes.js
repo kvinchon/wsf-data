@@ -32,7 +32,7 @@ const routes = [
       },
       {
         path: 'user/:id',
-        name: 'UserProfile',
+        name: 'Liste / Foyer',
         component: UserProfile
       },
       {

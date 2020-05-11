@@ -1,10 +1,10 @@
 <template>
-  <div class="card">
-    <div class="card-header" v-if="$slots.header">
+  <div class="chart-card">
+    <div class="chart-card-header" v-if="$slots.header">
       <slot name="header">
       </slot>
     </div>
-    <div class="card-body">
+    <div class="chart-card-body">
       <div :id="options.chart.id" class="apex-chart">
         <apexcharts
           :width="width"
@@ -15,19 +15,17 @@
         ></apexcharts>
       </div>
     </div>
-    <div class="card-footer" v-if="$slots.footer">
+    <div class="chart-card-footer" v-if="$slots.footer">
       <slot name="footer"></slot>
     </div>
   </div>
 </template>
 <script>
-import Card from "./Card.vue";
 import VueApexCharts from "vue-apexcharts";
 
 export default {
   name: "chart-card",
   components: {
-    Card,
     apexcharts: VueApexCharts
   },
   props: {

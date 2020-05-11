@@ -16,11 +16,11 @@ module.exports = {
         switch (req.params.filter) {
             case "typology":
                 count = db.countDistinct('typology').from('users').whereNotNull('typology');
-                query = db.select('typology as label', db.raw('COUNT(*)::int as ratio')).from('users').where('status', 'client').groupBy('typology');
+                query = db.select('typology as label', db.raw('COUNT(*)::int as ratio')).from('users').where('status', 'client').groupBy('typology').orderBy('ratio', 'desc');
                 break;
             case "status":
                 count = db.countDistinct('status').from('users');
-                query = db.select('status as label', db.raw('COUNT(*)::int as ratio')).from('users').groupBy('status');
+                query = db.select('status as label', db.raw('COUNT(*)::int as ratio')).from('users').groupBy('status').orderBy('ratio', 'desc');
                 break;
         }
 
