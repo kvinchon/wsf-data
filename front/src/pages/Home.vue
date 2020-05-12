@@ -5,6 +5,7 @@
         <div class="col-md-4">
           <div class="row">
             <div class="col-md-12">
+              <!-- Objectives card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Objectifs</h4>
@@ -12,6 +13,7 @@
                 </template>
                 <div class="row">
                   <div class="col-md-12">
+                    <!-- A new card is added for each objective -->
                     <card v-for="item in objectives.data.items" :key="item.title">
                       <template slot="header">
                         <h4 class="card-title">{{item.title}}</h4>
@@ -37,6 +39,7 @@
 
           <div class="row">
             <div class="col-md-12">
+              <!-- Appointments card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Rendez-vous</h4>
@@ -51,6 +54,7 @@
                 />
                 <div class="row">
                   <div class="col-md-12">
+                    <!-- A new card is added for each appointment -->
                     <card v-for="item in appointments.data.items" :key="item.household">
                       <template slot="header">
                         <h4 class="card-title">Foyer {{item.household}}</h4>
@@ -69,11 +73,13 @@
         <div class="col-md-4">
           <div class="row">
             <div class="col-md-12">
+              <!-- Typology distribution card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Répartition des clients par typologie</h4>
                 </template>
                 <div v-if="typologyRatio.series">
+                  <!-- Typology distribution chart -->
                   <chart-card
                     :id="typologyRatio.options.chart.id"
                     :type="typologyRatio.type"
@@ -88,11 +94,13 @@
 
           <div class="row">
             <div class="col-md-12">
+              <!-- Status distribution card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Répartition des utilisateurs par statut</h4>
                 </template>
                 <div v-if="statusRatio.series">
+                  <!-- Status distribution chart -->
                   <chart-card
                     :id="statusRatio.options.chart.id"
                     :type="statusRatio.type"
@@ -109,19 +117,21 @@
         <div class="col-md-4">
           <div class="row">
             <div class="col-md-12">
+              <!-- Notifications card -->
               <card class="card-notif">
                 <template slot="header">
                   <h4 class="card-title">Notifications</h4>
                   <base-select
                     :id="notifications.options.id"
                     :options="select.options.choices"
-                :selected="select.options.selected.default"
+                    :selected="select.options.selected.default"
                     @changed="reloadNotifications"
                     class="filter-select"
                   ></base-select>
                 </template>
                 <div class="row">
                   <div class="col-md-12">
+                    <!-- A new card is added for each notification -->
                     <card v-for="item in notifications.data.items" :key="item.title">
                       <template slot="header">
                         <h4 class="card-title">Foyer de {{item.first_name}} {{item.last_name}}</h4>
@@ -177,7 +187,7 @@ export default {
           choices: [
             { text: "Aujourd'hui", key: 1, value: "today" },
             { text: "Semaine", key: 2, value: "week" },
-            { text: "Mois", key: 3, value: "month"},
+            { text: "Mois", key: 3, value: "month" },
             { text: "Total", key: 4, value: "total" }
           ],
           selected: {
@@ -240,14 +250,29 @@ export default {
     };
   },
   methods: {
+    /**
+     * Allows you to reload notifications when the value changes on the select.
+     *
+     * @param {String} value The value of the select.
+     */
     reloadNotifications(value) {
       this.getNotifications(1, value, this.notifications);
     },
+    /**
+     *  Displays all notifications when you click on "see more".
+     */
     getAllNotifications() {
       var time_period = this.notifications.data.time_period;
       this.getNotifications(1, time_period, this.notifications, 10, 5);
     },
+    /**
+     * Retrieves advisor's objectives.
+     *
+     * @param {Number} advisor_id The advisor ID.
+     * @param {Object} card The objectives card.
+     */
     getAdvisorObjectives(advisor_id, card) {
+      // If the card has already been filled in, it is reset to show the new data
       card.isLoaded = false;
       card.data.items = [];
 
@@ -258,6 +283,7 @@ export default {
           var options = { month: "long" };
           card.isLoaded = true;
 
+          // For each response element, we process the data to display it as we want and add it to our card
           result.forEach(element => {
             if (element.deadline) {
               element.deadline = new Date(
@@ -271,11 +297,19 @@ export default {
             card.data.items.push(element);
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves advisor's appointments.
+     *
+     * @param {Number} advisor_id The advisor ID.
+     * @param {Object} card The appointments card.
+     */
     getAdvisorAppointments(advisor_id, card) {
+      // If the card has already been filled in, it is reset to show the new data
       card.isLoaded = false;
       card.data.items = [];
       card.attributes = [];
@@ -292,6 +326,7 @@ export default {
           };
           card.isLoaded = true;
 
+          // For each response element, we process the data to display it as we want and add it to our card
           result.forEach(element => {
             card.attributes.push({
               key: element.household,
@@ -311,29 +346,53 @@ export default {
             card.data.items.push(element);
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves distribution of users by typology or status.
+     *
+     * @param {String} filter The filter applied.
+     * @param {Object} chart The chart to build.
+     */
     getUsersRatioByFilter(filter, chart) {
       axios
         .get("http://localhost:3000/api/users/ratio/" + filter)
         .then(response => {
           var result = response.data.data.result;
 
+          // For each response element, we add it to our chart
           result.forEach(element => {
             chart.options.labels.push(element.label);
             chart.series.push(element.ratio);
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Redirects to the user's profile.
+     *
+     * @param {Object} item The current notification.
+     */
     getLocation(item) {
       this.$router.push({ name: "Liste / Foyer", params: { id: item.id } });
     },
+    /**
+     * Retrieves advisor's notifications.
+     *
+     * @param {Number} advisor_id The advisor ID.
+     * @param {String} time_period The period of time taken into account.
+     * @param {Object} card The notifications card.
+     * @param {Number} limit The number of notifications to be retrieved. (optional)
+     * @param {Number} offset The offset to be applied. (optional)
+     */
     getNotifications(advisor_id, time_period, card, limit = 5, offset = 0) {
+      // If the card has already been filled in, it is reset to show the new data
       card.isLoaded = false;
       card.data.time_period = time_period;
 
@@ -362,6 +421,7 @@ export default {
           card.isLoaded = true;
           card.data.count = count;
 
+          // For each response element, we process the data to display it as we want and add it to our card
           result.forEach(element => {
             startDate = new Date(Date.parse(element.date));
             endDate = new Date("2019-12-31");
@@ -374,13 +434,25 @@ export default {
             card.data.items.push(element);
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Returns the string with a capital letter at the beginning.
+     *
+     * @param {String} string The string to be modified.
+     */
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
+    /**
+     * Returns the number of days between two dates.
+     *
+     * @param {String} first The first date.
+     * @param {String} second The second date.
+     */
     getDays(first, second) {
       // Take the difference between the dates and divide by milliseconds per day.
       // Round to nearest whole number to deal with DST.

@@ -5,6 +5,7 @@
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-12">
+              <!-- Production and consumption card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Evolution de la production et consommation (W)</h4>
@@ -17,8 +18,8 @@
                   ></base-select>
                 </template>
                 <div v-if="productionConsumption.isLoaded">
-                  <!-- If user.name exists, display user.name -->
                   <div v-if="productionConsumption.series[0].data">
+                    <!-- Production and consumption chart -->
                     <chart-card
                       :id="productionConsumption.options.chart.id"
                       :height="productionConsumption.options.chart.height"
@@ -36,6 +37,7 @@
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-12">
+              <!-- Consumption ratio card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Auto-consommation et consommation réseau</h4>
@@ -49,6 +51,7 @@
                 </template>
                 <div v-if="consumptionRatio.isLoaded">
                   <div id="chart">
+                    <!-- Consumption ratio chart -->
                     <chart-card
                       :type="consumptionRatio.chartOptions.chart.type"
                       :height="consumptionRatio.chartOptions.chart.height"
@@ -65,6 +68,7 @@
 
           <div class="row">
             <div class="col-md-12">
+              <!-- Production ratio card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Auto-consommation et exportation</h4>
@@ -78,6 +82,7 @@
                 </template>
                 <div v-if="productionRatio.isLoaded">
                   <div id="chart">
+                    <!-- Production ratio chart -->
                     <chart-card
                       :type="productionRatio.chartOptions.chart.type"
                       :height="productionRatio.chartOptions.chart.height"
@@ -94,6 +99,7 @@
 
           <div class="row">
             <div class="col-md-6">
+              <!-- Leads card -->
               <card class="leads-card">
                 <template slot="header">
                   <div class="leads-rectangle"></div>
@@ -112,6 +118,7 @@
               </card>
             </div>
             <div class="col-md-6">
+              <!-- Prospects card -->
               <card class="prospects-card">
                 <template slot="header">
                   <div class="prospects-rectangle"></div>
@@ -139,6 +146,7 @@
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-12">
+              <!-- Equipments ratio card -->
               <card
                 class="table-striped-with-hover"
                 body-classes="table-full-width table-responsive"
@@ -146,6 +154,7 @@
                 <template slot="header">
                   <h4 class="card-title">Consommation par appareil</h4>
                 </template>
+                <!-- A new row is added for each equipment -->
                 <l-table
                   class="table-hover table-striped"
                   :columns="equipmentRatio.columns"
@@ -159,6 +168,7 @@
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-12">
+              <!-- Interventions ratio card -->
               <card
                 class="table-striped-with-hover"
                 body-classes="table-full-width table-responsive"
@@ -166,6 +176,7 @@
                 <template slot="header">
                   <h4 class="card-title">Pannes et maintenance</h4>
                 </template>
+                <!-- A new row is added for each intervention -->
                 <l-table
                   class="table-hover table-striped"
                   :columns="interventionsRatio.columns"
@@ -383,6 +394,11 @@ export default {
     };
   },
   methods: {
+    /**
+     * Allows you to reload production and consumption when the value changes on the select.
+     *
+     * @param {String} value The value of the select.
+     */
     reloadProductionConsumption(value) {
       switch (value) {
         case "today":
@@ -393,13 +409,30 @@ export default {
           break;
       }
     },
+    /**
+     * Allows you to reload production ratio when the value changes on the select.
+     *
+     * @param {String} value The value of the select.
+     */
     reloadProductionRatio(value) {
       this.getPanelsProductionRatio(value, this.productionRatio);
     },
+    /**
+     * Allows you to reload consumption ratio when the value changes on the select.
+     *
+     * @param {String} value The value of the select.
+     */
     reloadConsumptionRatio(value) {
       this.getPanelsConsumptionRatio(value, this.consumptionRatio);
     },
+    /**
+     * Retrieves average users production and consumption.
+     *
+     * @param {String} time_period The period of time taken into account.
+     * @param {Object} chart The production and consumption chart.
+     */
     getPanels(time_period, chart) {
+      // If the chart has already been filled in, it is reset to show the new data
       chart.options.xaxis.categories = [];
       chart.series[0].data = [];
       chart.series[1].data = [];
@@ -413,6 +446,7 @@ export default {
 
           chart.isLoaded = true;
 
+          // For each response element, we process the data to display it as we want and add it to our chart
           result.forEach(element => {
             tsConverted = new Date(
               Date.parse(element.date)
@@ -423,11 +457,18 @@ export default {
             chart.series[1].data.push(element.consumption);
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves average users production and consumption over one day.
+     *
+     * @param {Object} chart The production and consumption chart.
+     */
     getFronius(chart) {
+      // If the chart has already been filled in, it is reset to show the new data
       chart.options.xaxis.categories = [];
       chart.series[0].data = [];
       chart.series[1].data = [];
@@ -441,6 +482,7 @@ export default {
 
           chart.isLoaded = true;
 
+          // For each response element, we process the data to display it as we want and add it to our chart
           result.forEach(element => {
             tsConverted = new Date(
               Date.parse(element.timestamp)
@@ -458,11 +500,19 @@ export default {
             }
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves average users production ratio.
+     *
+     * @param {String} time_period The period of time taken into account.
+     * @param {Object} chart The production ratio chart.
+     */
     getPanelsProductionRatio(time_period, chart) {
+      // If the chart has already been filled in, it is reset to show the new data
       chart.isLoaded = false;
       chart.series = [];
 
@@ -472,6 +522,7 @@ export default {
           chart.isLoaded = true;
           var result = response.data.data.result;
 
+          // For each response element, we add it to our chart
           result.forEach(element => {
             chart.series.push(
               { name: "Auto-consommation", data: [element.selfconsumption] },
@@ -479,11 +530,19 @@ export default {
             );
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves average users consumption ratio.
+     *
+     * @param {String} time_period The period of time taken into account.
+     * @param {Object} chart The consumption ratio chart.
+     */
     getPanelsConsumptionRatio(time_period, chart) {
+      // If the chart has already been filled in, it is reset to show the new data
       chart.isLoaded = false;
       chart.series = [];
 
@@ -495,6 +554,7 @@ export default {
           chart.isLoaded = true;
           var result = response.data.data.result;
 
+          // For each response element, we add it to our chart
           result.forEach(element => {
             chart.series.push(
               { name: "Auto-consommation", data: [element.selfconsumption] },
@@ -502,11 +562,18 @@ export default {
             );
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves average users equipment ratio.
+     *
+     * @param {Object} table The equipment ratio table.
+     */
     getEquipmentRatio(table) {
+      // If the table has already been filled in, it is reset to show the new data
       table.isLoaded = false;
       table.data = [];
 
@@ -518,10 +585,12 @@ export default {
 
           table.isLoaded = true;
 
+          // Retrieves the keys to display them in the table
           columns.forEach(column => {
             table.columns.push(column);
           });
 
+          // For each response element, we process the data to display it as we want and add it to our table
           result.forEach(element => {
             element.equipment_type = this.capitalizeFirstLetter(
               element.equipment_type
@@ -532,11 +601,18 @@ export default {
             table.data.push(element);
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves average users interventions ratio.
+     *
+     * @param {Object} table The interventions ratio table.
+     */
     getInterventionsRatio(table) {
+      // If the table has already been filled in, it is reset to show the new data
       table.isLoaded = false;
       table.data = [];
 
@@ -548,10 +624,12 @@ export default {
 
           table.isLoaded = true;
 
+          // Retrieves the keys to display them in the table
           columns.forEach(column => {
             table.columns.push(column);
           });
 
+          // For each response element, we process the data to display it as we want and add it to our table
           result.forEach(element => {
             element.intervention_type = this.capitalizeFirstLetter(
               element.intervention_type
@@ -562,11 +640,19 @@ export default {
             table.data.push(element);
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves number of users by status.
+     *
+     * @param {String} status The user status. (lead or prospect)
+     * @param {Object} card The associated card.
+     */
     getUsersByStatus(status, card) {
+      // If the card has already been filled in, it is reset to show the new data
       card.isLoaded = false;
       card.data = {};
 
@@ -577,14 +663,21 @@ export default {
 
           card.isLoaded = true;
 
+          // For each response element, we process the data to display it as we want and add it to our card
           result.forEach(element => {
             card.data = element;
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Returns the string with a capital letter at the beginning.
+     *
+     * @param {String} string The string to be modified.
+     */
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }

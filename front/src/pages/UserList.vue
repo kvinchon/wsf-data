@@ -3,10 +3,12 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
+          <!-- Users card -->
           <card class="table-striped-with-hover" body-classes="table-full-width table-responsive">
             <template slot="header">
               <h4 class="card-title">Liste des utilisateurs</h4>
             </template>
+            <!-- A new row is added for each user -->
             <l-table
               class="table-hover table-striped table-users"
               :columns="users.columns"
@@ -38,7 +40,13 @@ export default {
     };
   },
   methods: {
+    /**
+     * Retrieves users.
+     *
+     * @param {Object} table The users table.
+     */
     getUsers(table) {
+      // If the table has already been filled in, it is reset to show the new data
       table.isLoaded = false;
       table.data = [];
 
@@ -50,13 +58,17 @@ export default {
 
           table.isLoaded = true;
 
+          // Retrieves the keys to display them in the table
           columns.forEach(column => {
             table.columns.push(column);
           });
 
+          // For each response element, we process the data to display it as we want and add it to our table
           result.forEach(element => {
             if (element.intervention) {
-              element.intervention = this.capitalizeFirstLetter(element.intervention);
+              element.intervention = this.capitalizeFirstLetter(
+                element.intervention
+              );
             }
             element.typology = this.capitalizeFirstLetter(element.typology);
             element.status = this.capitalizeFirstLetter(element.status);
@@ -67,10 +79,16 @@ export default {
             table.data.push(element);
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Returns the string with a capital letter at the beginning.
+     *
+     * @param {String} string The string to be modified.
+     */
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }

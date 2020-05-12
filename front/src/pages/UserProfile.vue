@@ -5,6 +5,7 @@
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-12">
+              <!-- Customer card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Informations client</h4>
@@ -13,6 +14,7 @@
                   >Client depuis le {{this.userInfo.data.created_on}}</p>
                   <button class="btnUserInfo" @click="userInfo.isShown = !userInfo.isShown"></button>
                 </template>
+                <!-- First page -->
                 <div class="userInfo1" v-show="userInfo.isShown">
                   <div class="row">
                     <div class="col-md-6">
@@ -54,6 +56,7 @@
                   </div>
                 </div>
 
+                <!-- Second page -->
                 <div class="userInfo2" v-show="!userInfo.isShown">
                   <div class="row">
                     <div class="col-md-6">
@@ -100,6 +103,7 @@
 
           <div class="row">
             <div class="col-md-12">
+              <!-- Production evolution card -->
               <card class="production-card">
                 <template slot="header">
                   <div class="production-rectangle"></div>
@@ -140,6 +144,7 @@
             </div>
 
             <div class="col-md-12">
+              <!-- Consumption evolution card -->
               <card class="consumption-card">
                 <template slot="header">
                   <div class="consumption-rectangle"></div>
@@ -184,6 +189,7 @@
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-12">
+              <!-- Consumption ratio card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Auto-consommation et consommation réseau</h4>
@@ -197,6 +203,7 @@
                 </template>
                 <div v-if="consumptionRatioByUserId.isLoaded">
                   <div id="chart">
+                    <!-- Consumption ratio chart -->
                     <chart-card
                       :type="consumptionRatioByUserId.chartOptions.chart.type"
                       :height="consumptionRatioByUserId.chartOptions.chart.height"
@@ -213,6 +220,7 @@
 
           <div class="row">
             <div class="col-md-12">
+              <!-- Production ratio card -->
               <card>
                 <template slot="header">
                   <h4 class="card-title">Auto-consommation et exportation</h4>
@@ -226,6 +234,7 @@
                 </template>
                 <div v-if="productionRatioByUserId.isLoaded">
                   <div id="chart">
+                    <!-- Production ratio chart -->
                     <chart-card
                       :type="productionRatioByUserId.chartOptions.chart.type"
                       :height="productionRatioByUserId.chartOptions.chart.height"
@@ -244,6 +253,7 @@
 
       <div class="row">
         <div class="col-md-12">
+          <!-- Interventions card -->
           <card class="interventions-card">
             <template slot="header">
               <h4 class="card-title">Prévisions de maintenance</h4>
@@ -260,6 +270,7 @@
             </template>
             <div class="row">
               <div class="col-md-6">
+                <!-- A new card is added for each intervention -->
                 <card v-for="item in userInterventions.data.items" :key="item.name">
                   <template slot="header">
                     <span v-if="item.status === 'Urgent'" class="inter-critical">{{item.status}}</span>
@@ -503,6 +514,11 @@ export default {
     };
   },
   methods: {
+    /**
+     * Allows you to reload production evolution when the value changes on the select.
+     *
+     * @param {String} value The value of the select.
+     */
     reloadProductionEvolutionByUserId(value) {
       this.getPanelsProductionEvolutionByUserId(
         value,
@@ -510,6 +526,11 @@ export default {
         this.productionEvolution
       );
     },
+    /**
+     * Allows you to reload consumption evolution when the value changes on the select.
+     *
+     * @param {String} value The value of the select.
+     */
     reloadConsumptionEvolutionByUserId(value) {
       this.getPanelsConsumptionEvolutionByUserId(
         value,
@@ -517,6 +538,11 @@ export default {
         this.consumptionEvolution
       );
     },
+    /**
+     * Allows you to reload production ratio when the value changes on the select.
+     *
+     * @param {String} value The value of the select.
+     */
     reloadProductionRatioByUserId(value) {
       this.getPanelsProductionRatioByUserId(
         value,
@@ -524,6 +550,11 @@ export default {
         this.productionRatioByUserId
       );
     },
+    /**
+     * Allows you to reload consumption ratio when the value changes on the select.
+     *
+     * @param {String} value The value of the select.
+     */
     reloadConsumptionRatioByUserId(value) {
       this.getPanelsConsumptionRatioByUserId(
         value,
@@ -531,6 +562,11 @@ export default {
         this.consumptionRatioByUserId
       );
     },
+    /**
+     * Allows you to reload interventions when the value changes on the select.
+     *
+     * @param {String} value The value of the select.
+     */
     reloadInterventions(value) {
       this.getInterventionsByUserId(
         value,
@@ -538,7 +574,14 @@ export default {
         this.userInterventions
       );
     },
+    /**
+     * Retrieves user information.
+     *
+     * @param {String} user_id The user ID.
+     * @param {Object} card The user card.
+     */
     getUserById(user_id, card) {
+      // If the card has already been filled in, it is reset to show the new data
       card.isLoaded = false;
       card.data = {};
 
@@ -549,6 +592,7 @@ export default {
 
           card.isLoaded = true;
 
+          // For each response element, we process the data to display it as we want and add it to our card
           result.forEach(element => {
             element.typology = this.capitalizeFirstLetter(element.typology);
             element.created_on = new Date(
@@ -558,11 +602,20 @@ export default {
             card.data = element;
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves user production evolution.
+     *
+     * @param {String} time_period The period of time taken into account.
+     * @param {Number} user_id The user ID.
+     * @param {Object} card The production evolution card.
+     */
     getPanelsProductionEvolutionByUserId(time_period, user_id, card) {
+      // If the card has already been filled in, it is reset to show the new data
       card.data = {};
       card.isLoaded = false;
 
@@ -578,15 +631,25 @@ export default {
           card.isLoaded = true;
           card.options.value = time_period;
 
+          // For each response element, we add it to our card
           result.forEach(element => {
             card.data = element;
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves user consumption evolution.
+     *
+     * @param {String} time_period The period of time taken into account.
+     * @param {Number} user_id The user ID.
+     * @param {Object} card The consumption evolution card.
+     */
     getPanelsConsumptionEvolutionByUserId(time_period, user_id, card) {
+      // If the card has already been filled in, it is reset to show the new data
       card.data = {};
       card.isLoaded = false;
 
@@ -602,15 +665,25 @@ export default {
           card.isLoaded = true;
           card.options.value = time_period;
 
+          // For each response element, we add it to our card
           result.forEach(element => {
             card.data = element;
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves user production ratio.
+     *
+     * @param {String} time_period The period of time taken into account.
+     * @param {Number} user_id The user ID.
+     * @param {Object} chart The production ratio card.
+     */
     getPanelsProductionRatioByUserId(time_period, user_id, chart) {
+      // If the chart has already been filled in, it is reset to show the new data
       chart.isLoaded = false;
       chart.series = [];
 
@@ -625,6 +698,7 @@ export default {
           var result = response.data.data.result;
           chart.isLoaded = true;
 
+          // For each response element, we add it to our card
           result.forEach(element => {
             chart.series.push(
               { name: "Auto-consommation", data: [element.selfconsumption] },
@@ -632,11 +706,20 @@ export default {
             );
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves user consumption ratio.
+     *
+     * @param {String} time_period The period of time taken into account.
+     * @param {Number} user_id The user ID.
+     * @param {Object} chart The consumption ratio chart.
+     */
     getPanelsConsumptionRatioByUserId(time_period, user_id, chart) {
+      // If the chart has already been filled in, it is reset to show the new data
       chart.isLoaded = false;
       chart.series = [];
 
@@ -651,6 +734,7 @@ export default {
           chart.isLoaded = true;
           var result = response.data.data.result;
 
+          // For each response element, we add it to our card
           result.forEach(element => {
             chart.series.push(
               { name: "Auto-consommation", data: [element.selfconsumption] },
@@ -658,11 +742,20 @@ export default {
             );
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves user interventions.
+     *
+     * @param {String} time_period The period of time taken into account.
+     * @param {Number} user_id The user ID.
+     * @param {Object} card The interventions card.
+     */
     getInterventionsByUserId(time_period, user_id, card) {
+      // If the card has already been filled in, it is reset to show the new data
       card.isLoaded = false;
       card.data.total = 0;
       card.data.items = [];
@@ -680,6 +773,7 @@ export default {
 
           card.isLoaded = true;
 
+          // For each response element, we process the data to display it as we want and add it to our card
           result.forEach(element => {
             if (element.date < "2019-12-01" || element.date >= "2020-01-01") {
               if (element.date < "2019-12-01") {
@@ -702,18 +796,35 @@ export default {
             card.data.items.push(element);
           });
         })
+        // Displays errors
         .catch(error => {
           console.log(error);
         });
     },
+    /**
+     * Retrieves user interventions by month.
+     *
+     * @param {Object} e The event triggered.
+     */
     getInterventionsByMonth(e) {
       var month = e.target.value;
       var user_id = this.$route.params.id;
       this.getInterventionsByUserId(month, user_id, this.userInterventions);
     },
+    /**
+     * Returns the string with a capital letter at the beginning.
+     *
+     * @param {String} string The string to be modified.
+     */
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
+    /**
+     * Returns the number of days between two dates.
+     *
+     * @param {String} first The first date.
+     * @param {String} second The second date.
+     */
     getDays(first, second) {
       // Take the difference between the dates and divide by milliseconds per day.
       // Round to nearest whole number to deal with DST.
@@ -1003,7 +1114,7 @@ export default {
 }
 .interventions-card {
   background: url("/img/icons/inter-background.png") no-repeat;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   background-position-y: 60px;
 }
 </style>
