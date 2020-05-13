@@ -6,6 +6,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 This project is based on the Vue.js and Hapi.js frameworks, and uses Apexcharts.js as a data visualization library.
+
 Make sure that `Node.js` is installed on your local machine. Binaries, installers, and source tarballs are available at <https://nodejs.org/en/download/>. 
 
 ### Installing
