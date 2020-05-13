@@ -5,7 +5,8 @@ This repository is exclusively reserved for the 4th year Data Project, carried o
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
-Make sure that `Node.js` is installed on your local machine. Binaries, installers, and source tarballs are available at <https://nodejs.org/en/download/>.
+This project is based on the Vue.js and Hapi.js frameworks, and uses Apexcharts.js as a data visualization library.
+Make sure that `Node.js` is installed on your local machine. Binaries, installers, and source tarballs are available at <https://nodejs.org/en/download/>. 
 
 ### Installing
 Clone this repository into a folder of your choice:
@@ -43,6 +44,15 @@ $ npm run serve
 
 ## API Documentation
 Documentation for the latest Current release is available at <http://localhost:3000/documentation>.
+
+## Glitches and future improvements
+The current version does not contain any major glitches, only at the level of the responsive which has not been managed on all components. 
+
+For the next version, the implementation of a calculation model to measure the reliability of maintenance forecasts is planned, as well as the management of connected users with rights management according to user profile. In addition, it is planned to implement a chat as an exchange platform between consultants, maintenance and customers. Finally, the addition of filters on the columns of the tables as well as a page dedicated to the settings is also to be expected in a future version.
+
+## Static data
+
+All data is managed dynamically, with the exception of the logged-in user (advisor). The data comes either from the original tables or from added tables such as users, interventions or notifications.
 
 ## Authors
 * **Kevin Vinchon** - *Initial work* - [kvinchon](https://github.com/kvinchon)
